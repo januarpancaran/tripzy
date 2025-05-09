@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_tripzy',
         'USER': 'root',
-        'PASSWORD': '170105',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306'
     }

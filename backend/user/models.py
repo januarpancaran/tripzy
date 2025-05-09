@@ -10,8 +10,8 @@ class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=50, unique=True)
     nama = models.CharField(max_length=50)
-    password = models.CharField(max_length=128)
     email = models.CharField(max_length=50, null=True, blank=True)
+    password = models.CharField(max_length=128)
     no_hp = models.CharField(max_length=50, null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLES, default='user')
 
