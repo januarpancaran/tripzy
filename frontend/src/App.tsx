@@ -3,6 +3,8 @@ import LoginPage  from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import PrivateRoute from "./components/PrivateRoute";
+import ForgotPasswordPage from "./components/ForgotPasswordPage";
+import ResetPasswordPage from "./components/ResetPasswordPage";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
             </PrivateRoute>
           } 
         />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Routes>
     </BrowserRouter>
   );

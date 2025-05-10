@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function RegisterPage() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
-        username: '', email: '', password: '', firstName: '', lastName: '', noHp: '',
+        username: '', email: '', password: '', firstName: '', lastName: '',
     });
     const [registerUser] = useMutation(REGISTER_USER, {
         onCompleted: () => navigate("/login"),
