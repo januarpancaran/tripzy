@@ -71,4 +71,21 @@ mutation ChangePassword($oldPassword: String!, $newPassword: String!) {
         errors
     }
 }
-`
+`;
+
+export const REQUEST_PASSWORD_RESET = gql`
+mutation RequestPasswordReset($email: String!) {
+    requestPasswordReset(email: $email) {
+        success
+    }
+}
+`;
+
+export const RESET_PASSWORD = gql`
+mutation ResetPassword($uid: String!, $token: String!, $newPassword: String!) {
+    resetPassword(uid: $uid, token: $token, newPassword: $newPassword) {
+        success
+        errors
+    }
+}
+`;

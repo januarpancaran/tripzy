@@ -4,6 +4,10 @@ from graphql import GraphQLError
 from django.contrib.auth import get_user_model
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
 from graphene_django.types import DjangoObjectType
 from graphql_jwt.decorators import login_required
 from graphql_jwt.mixins import ObtainJSONWebTokenMixin
@@ -154,11 +158,66 @@ class CustomObtainJSONWebToken(graphene.Mutation, ObtainJSONWebTokenMixin):
             payload=payload,
             refresh_expires_in=jwt_settings.JWT_REFRESH_EXPIRATION_DELTA.total_seconds() if jwt_settings.JWT_ALLOW_REFRESH else None
         )
+
+
+class RequestPasswordReset(graphene.Mutation):
+    success = graphene.Boolean()
+
+    class Arguments:
+        email = graphene.String(required=True)
+
+    def mutate(self, info, email):
+        User = get_user_model()
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            raise GraphQLError("Email tidak ditemukan")
+
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        reset_link = f"http://localhost:3000/reset-password?uid={uid}&token={token}"
+
+        send_mail(
+            "Reset Password",
+            f"Klik link berikut untuk reset password: {reset_link}",
+            "noreply@tripzy.com",
+            [user.email],
+        )
+
+        return RequestPasswordReset(success=True)
+
+class ResetPassword(graphene.Mutation):
+    success = graphene.Boolean()
+    errors = graphene.List(graphene.String)
+
+    class Arguments:
+        uid = graphene.String(required=True)
+        token = graphene.String(required=True)
+        new_password = graphene.String(required=True)
+
+    def mutate(self, info, uid, token, new_password):
+        try:
+            uid = urlsafe_base64_decode(uid).decode()
+            user = get_user_model().objects.get(pk=uid)
+        except Exception:
+            return ResetPassword(success=False, errors=["Link tidak valid"])
+
+        if not default_token_generator.check_token(user, token):
+            return ResetPassword(success=False, errors=["Token tidak valid atau expired"])
+
+        if len(new_password) < 8:
+            return ResetPassword(success=False, errors=["Password baru minimal 8 karakter"])
+
+        user.set_password(new_password)
+        user.save()
+        return ResetPassword(success=True, errors=[])
+
 class Mutation(graphene.ObjectType):
     register_user = RegisterUser.Field()
     update_profile = UpdateProfile.Field()
     change_password = ChangePassword.Field()
-    # token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    request_password_reset = RequestPasswordReset.Field()
+    reset_password = ResetPassword.Field()
     token_auth = CustomObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
