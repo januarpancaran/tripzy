@@ -6,6 +6,9 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from graphene_django.types import DjangoObjectType
 from graphql_jwt.decorators import login_required
+from graphql_jwt.mixins import ObtainJSONWebTokenMixin
+from graphql_jwt.settings import jwt_settings
+from graphql_jwt.shortcuts import get_token
 from .models import Users
 
 class UserType(DjangoObjectType):
@@ -117,10 +120,45 @@ class ChangePassword(graphene.Mutation):
         user.save()
 
         return ChangePassword(success=True, errors=[])
+
+class CustomObtainJSONWebToken(graphene.Mutation, ObtainJSONWebTokenMixin):
+    token = graphene.String()
+    payload = graphene.JSONString()
+    refresh_expires_in = graphene.Int()
+
+    class Arguments:
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    @classmethod
+    def mutate(cls, root, info, username, password):
+        User = get_user_model()
+
+        try:
+            validate_email(username)
+            user = User.objects.filter(email=username).first()
+        except ValidationError:
+            user = User.objects.filter(username=username).first()
+
+        if not user:
+            raise GraphQLError("Akun tidak ditemukan")
+        
+        if not user.check_password(password):
+            raise GraphQLError("Password salah")
+
+        token = get_token(user)
+        payload = jwt_settings.JWT_PAYLOAD_HANDLER(user)
+
+        return CustomObtainJSONWebToken(
+            token=token,
+            payload=payload,
+            refresh_expires_in=jwt_settings.JWT_REFRESH_EXPIRATION_DELTA.total_seconds() if jwt_settings.JWT_ALLOW_REFRESH else None
+        )
 class Mutation(graphene.ObjectType):
     register_user = RegisterUser.Field()
     update_profile = UpdateProfile.Field()
     change_password = ChangePassword.Field()
-    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    # token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    token_auth = CustomObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()

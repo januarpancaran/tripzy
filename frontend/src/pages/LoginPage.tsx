@@ -20,7 +20,7 @@ export default function LoginPage() {
             loginUser({ variables: form });
         }}>
             <h2>Login</h2>
-            <input placeholder="Username" value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
+            <input placeholder="Username atau Email" value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
             <input placeholder="Password" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
             <button type="submit">Login</button>
         </form>
