@@ -11,7 +11,7 @@ from .models import Users
 class UserType(DjangoObjectType):
     class Meta:
         model = Users
-        fields = ("id", "username", "email", "password", "first_name", "last_name", "no_hp")
+        fields = ("id", "username", "email", "password", "first_name", "last_name", "no_hp", "jenis_kelamin", "tanggal_lahir", "kota_tinggal")
 
 class Query(graphene.ObjectType):
     me = graphene.Field(UserType)
@@ -29,9 +29,12 @@ class RegisterUser(graphene.Mutation):
         password = graphene.String(required=True)
         first_name = graphene.String(required=True)
         last_name = graphene.String(required=False)
-        no_hp = graphene.String(required=True)
+        no_hp = graphene.String(required=False)
+        jenis_kelamin = graphene.String(required=False)
+        tanggal_lahir = graphene.Date(required=False)
+        kota_tinggal = graphene.String(required=False)
 
-    def mutate(self, info, username, email, password, no_hp, first_name, last_name=""):
+    def mutate(self, info, username, email, password, no_hp, first_name, last_name="", jenis_kelamin=None, tanggal_lahir=None, kota_tinggal=None):
         User = get_user_model()
 
         if User.objects.filter(username=username).exists():
@@ -57,6 +60,9 @@ class RegisterUser(graphene.Mutation):
             first_name=first_name,
             last_name=last_name,
             no_hp=no_hp,
+            jenis_kelamin=jenis_kelamin,
+            tanggal_lahir=tanggal_lahir,
+            kota_tinggal=kota_tinggal,
         )
 
         user.set_password(password)
@@ -64,8 +70,34 @@ class RegisterUser(graphene.Mutation):
 
         return RegisterUser(user=user)
 
+class UpdateProfile(graphene.Mutation):
+    user = graphene.Field(UserType)
+
+    class Arguments:
+        no_hp = graphene.String()
+        jenis_kelamin = graphene.String()
+        tanggal_lahir = graphene.String()
+        kota_tinggal = graphene.String()
+
+    @login_required
+    def mutate(self, info, no_hp=None, jenis_kelamin=None, tanggal_lahir=None, kota_tinggal=None):
+        user = info.context.user
+
+        if no_hp is not None:
+            user.no_hp = no_hp
+        if jenis_kelamin is not None:
+            user.jenis_kelamin = jenis_kelamin
+        if tanggal_lahir is not None:
+            user.tanggal_lahir = tanggal_lahir
+        if kota_tinggal is not None:
+            user.kota_tinggal = kota_tinggal
+
+        user.save()
+        return UpdateProfile(user=user)
+
 class Mutation(graphene.ObjectType):
     register_user = RegisterUser.Field()
+    update_profile = UpdateProfile.Field()
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()

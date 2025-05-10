@@ -15,7 +15,10 @@ mutation RegisterUser(
     $password: String!,
     $firstName: String!,
     $lastName: String!,
-    $noHp: String!,
+    $noHp: String,
+    $jenisKelamin: String,
+    $tanggalLahir: Date,
+    $kotaTinggal: String,
 ) {
     registerUser(
         username: $username, 
@@ -24,6 +27,9 @@ mutation RegisterUser(
         firstName: $firstName,
         lastName: $lastName,
         noHp: $noHp,
+        jenisKelamin: $jenisKelamin
+        tanggalLahir: $tanggalLahir
+        kotaTinggal: $kotaTinggal
     ) {
         user {
             id
@@ -33,3 +39,27 @@ mutation RegisterUser(
     }
 } 
 `;
+
+export const UPDATE_PROFILE = gql`
+mutation UpdateProfile(
+    $noHp: String,
+    $jenisKelamin: String,
+    $tanggalLahir: String,
+    $kotaTinggal: String,
+) {
+    updateProfile(
+        noHp: $noHp,
+        jenisKelamin: $jenisKelamin,
+        tanggalLahir: $tanggalLahir,
+        kotaTinggal: $kotaTinggal,
+    ) {
+        user {
+            id
+            noHp
+            jenisKelamin
+            tanggalLahir
+            kotaTinggal
+        }
+    }
+}
+`

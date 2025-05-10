@@ -9,6 +9,9 @@ query Me {
         firstName
         lastName
         noHp
+        jenisKelamin
+        tanggalLahir
+        kotaTinggal
     }
 }
 `;
