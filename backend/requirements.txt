@@ -1,0 +1,5 @@
+django
+django-cors-headers
+django-graphql-jwt
+graphene-django
+mysqlclient
