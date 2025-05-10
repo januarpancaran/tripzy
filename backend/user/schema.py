@@ -95,9 +95,32 @@ class UpdateProfile(graphene.Mutation):
         user.save()
         return UpdateProfile(user=user)
 
+class ChangePassword(graphene.Mutation):
+    success = graphene.Boolean()
+    errors = graphene.List(graphene.String)
+
+    class Arguments:
+        old_password = graphene.String(required=True)
+        new_password = graphene.String(required=True)
+
+    @login_required
+    def mutate(self, info, old_password, new_password):
+        user = info.context.user
+
+        if not user.check_password(old_password):
+            return ChangePassword(success=False, errors=["Password lama salah"])
+
+        if len(new_password) < 8:
+            return ChangePassword(success=False, errors=["Password baru minimal berisi 8 karakter"])
+
+        user.set_password(new_password)
+        user.save()
+
+        return ChangePassword(success=True, errors=[])
 class Mutation(graphene.ObjectType):
     register_user = RegisterUser.Field()
     update_profile = UpdateProfile.Field()
+    change_password = ChangePassword.Field()
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()

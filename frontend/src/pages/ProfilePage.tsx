@@ -3,6 +3,7 @@ import { ME_QUERY } from "../graphql/queries";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UPDATE_PROFILE } from "../graphql/mutations";
+import ChangePasswordForm from "../components/ChangePasswordForm";
 
 export default function ProfilePage() {
     const { data, loading, error } = useQuery(ME_QUERY);
@@ -76,6 +77,7 @@ export default function ProfilePage() {
             <label>Tanggal Lahir:</label>
             <input type="date" name="tanggalLahir" value={form.tanggalLahir} onChange={handleChange} />
 
+            <br />
             <label>Kota Tempat Tinggal:</label>
             <input type="text" name="kotaTinggal" value={form.kotaTinggal} onChange={handleChange} />
 
@@ -85,7 +87,10 @@ export default function ProfilePage() {
             <label>No. Handphone:</label>
             <input type="text" name="noHp" value={form.noHp} onChange={handleChange} />
 
+            <br />
+
             <button onClick={handleSave}>Simpan</button>
+            <ChangePasswordForm />
             <button onClick={handleLogout}>Logout</button>
         </div>
     );
