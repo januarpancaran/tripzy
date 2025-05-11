@@ -41,7 +41,7 @@ class RegisterUser(graphene.Mutation):
         tanggal_lahir = graphene.Date(required=False)
         kota_tinggal = graphene.String(required=False)
 
-    def mutate(self, info, username, email, password, no_hp, first_name, last_name="", jenis_kelamin=None, tanggal_lahir=None, kota_tinggal=None):
+    def mutate(self, info, username, email, password, first_name, last_name="", no_hp=None, jenis_kelamin=None, tanggal_lahir=None, kota_tinggal=None):
         User = get_user_model()
 
         if User.objects.filter(username=username).exists():
@@ -57,9 +57,6 @@ class RegisterUser(graphene.Mutation):
 
         if len(password) < 8:
             raise GraphQLError("Password minimal berisi 8 karakter")
-
-        if not no_hp.isdigit() or not (10 <= len(no_hp) <= 15):
-            raise GraphQLError("Nomor telepon harus minimal 10 angka")
 
         user = User(
             username=username,
@@ -91,7 +88,10 @@ class UpdateProfile(graphene.Mutation):
         user = info.context.user
 
         if no_hp is not None:
-            user.no_hp = no_hp
+            if not no_hp.isdigit() or not (10 <= len(no_hp) <= 15):
+                raise GraphQLError("Nomor telepon harus minimal 10 angka")
+            else: 
+                user.no_hp = no_hp
         if jenis_kelamin is not None:
             user.jenis_kelamin = jenis_kelamin
         if tanggal_lahir is not None:
