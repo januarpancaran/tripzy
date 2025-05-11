@@ -1,8 +1,9 @@
 import graphene
 from user.schema import Query as UserQuery
 from user.schema import Mutation as UserMutation
+from diskon.schema import DiskonQuery  
 
-class Query(UserQuery, graphene.ObjectType):
+class Query(UserQuery, DiskonQuery, graphene.ObjectType):  
     pass
 
 class Mutation(UserMutation, graphene.ObjectType):
