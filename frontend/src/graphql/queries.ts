@@ -15,3 +15,17 @@ query Me {
     }
 }
 `;
+
+export const GET_DISKON = gql`
+  query GetDiskon {
+    allDiskon {
+      id
+      code
+      tipeDiskon
+      value
+      minTransaksi
+      expiresAt
+      description
+    }
+  }
+`;
