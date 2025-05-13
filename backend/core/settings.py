@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "user",
     "diskon",
     "trip",
+    "trip_member",
 ]
 
 MIDDLEWARE = [

@@ -2,6 +2,9 @@ import graphene
 from graphene_django import DjangoObjectType
 from graphql_jwt.decorators import login_required
 from .models import Kota, Hotel, Kendaraan, Trip, RencanaPerjalanan
+from trip_member.models import TripMember
+from trip_member.schema import TripMemberType
+from django.db.models import Q
 
 # Queries
 class KotaType(DjangoObjectType):
@@ -20,9 +23,17 @@ class KendaraanType(DjangoObjectType):
         fields = "__all__"
 
 class TripType(DjangoObjectType):
+    members = graphene.List(TripMemberType)
+    member_status = graphene.String()
     class Meta:
         model = Trip
         fields = "__all__"
+
+    def resolve_members(self, info):
+        return self.members.select_related("user").all()
+
+    def resolve_member_status(self, info):
+        return "creator" if self.created_by == info.context.user else "member"
 
 class RencanaPerjalananType(DjangoObjectType):
     class Meta:
@@ -48,12 +59,16 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_all_trip(root, info):
         user = info.context.user
-        return Trip.objects.filter(created_by=user)
+        return Trip.objects.filter(
+            Q(created_by=user) | Q(members__user=user, members__status="joined")
+        ).distinct()
 
     @login_required
     def resolve_all_rencana_perjalanan(root, info):
         user = info.context.user
-        return RencanaPerjalanan.objects.filter(trip__created_by=user)
+        return RencanaPerjalanan.objects.filter(
+            Q(trip__created_by=user) | Q(trip__members__user=user, trip__members__status="joined")
+        ).distinct()
 
 # Mutations
 class CreateKota(graphene.Mutation):
@@ -123,6 +138,12 @@ class CreateTrip(graphene.Mutation):
             jumlah_orang=jumlah_orang,
             lama_perjalanan=lama_perjalanan,
             tanggal_berangkat=tanggal_berangkat,
+        )
+
+        TripMember.objects.create(
+            trip=trip,
+            user=user,
+            status="joined",
         )
 
         return CreateTrip(trip=trip)
