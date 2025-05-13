@@ -36,8 +36,14 @@ export default function ProfilePage() {
     const handleSave = async () => {
         try {
             const formattedTanggal = form.tanggalLahir ? new Date(form.tanggalLahir).toISOString : null;
+            const variables = {
+                ...(form.noHp !== "" && { noHp: form.noHp }),
+                ...(form.jenisKelamin !== "" && { jenisKelamin: form.jenisKelamin }),
+                ...(form.tanggalLahir !== "" && { tanggalLahir: formattedTanggal }),
+                ...(form.kotaTinggal !== "" && { kotaTinggal: form.kotaTinggal }),
+            };
 
-            await updateProfile({ variables: {...form, tanggalLahir: formattedTanggal} });
+            await updateProfile({ variables });
             setTimeout(() => {
                 alert("Profil berhasil diperbaharui");
             }, 100);
