@@ -42,6 +42,7 @@ class Trip(models.Model):
 class RencanaPerjalanan(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE) 
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, null=True, blank=True)
+    jumlah_kamar = models.IntegerField(validators=[MinValueValidator(1)], default=1)
     kendaraan = models.ForeignKey(Kendaraan, on_delete=models.CASCADE, null=True, blank=True)
     estimasi_biaya = models.IntegerField(validators=[MinValueValidator(0)])
 

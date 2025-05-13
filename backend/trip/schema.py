@@ -152,12 +152,13 @@ class CreateRencanaPerjalanan(graphene.Mutation):
     class Arguments:
         trip_id = graphene.ID(required=True)
         hotel_id = graphene.ID()
+        jumlah_kamar = graphene.Int(required=False)
         kendaraan_id = graphene.ID()
 
     rencana = graphene.Field(RencanaPerjalananType)
 
     @login_required
-    def mutate(self, info, trip_id, hotel_id=None, kendaraan_id=None):
+    def mutate(self, info, trip_id, jumlah_kamar=1, hotel_id=None, kendaraan_id=None):
         trip = Trip.objects.get(pk=trip_id)
         hotel = Hotel.objects.get(pk=hotel_id) if hotel_id else None
         kendaraan = Kendaraan.objects.get(pk=kendaraan_id) if kendaraan_id else None
@@ -166,19 +167,15 @@ class CreateRencanaPerjalanan(graphene.Mutation):
         if hotel: 
             biaya_hotel = hotel.harga_per_malam * trip.lama_perjalanan * round(trip.jumlah_orang / 2)
 
-        biaya_kendaraan = 0
-        if kendaraan: 
-            biaya_kendaraan = kendaraan.harga
-
-        seasonal_multiplier = 1
-        if trip.tanggal_berangkat.month in [6, 7, 12, 1]:
-            seasonal_multiplier = 1.2
+        biaya_kendaraan = kendaraan.harga if kendaraan else 0
+        seasonal_multiplier = 1.2 if trip.tanggal_berangkat.month in [6, 7, 12, 1] else 1
 
         total_estimasi = (biaya_hotel + biaya_kendaraan) * seasonal_multiplier
 
         rencana = RencanaPerjalanan.objects.create(
             trip=trip,
             hotel=hotel,
+            jumlah_kamar=jumlah_kamar,
             kendaraan=kendaraan,
             estimasi_biaya=round(total_estimasi),
         )
