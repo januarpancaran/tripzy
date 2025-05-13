@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "diskon",
     "trip",
     "trip_member",
+    "laporan_pengeluaran",
 ]
 
 MIDDLEWARE = [

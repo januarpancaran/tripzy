@@ -40,6 +40,7 @@ class Trip(models.Model):
         return self.nama_trip
 
 class RencanaPerjalanan(models.Model):
+    rencana_id = models.AutoField(primary_key=True)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE) 
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, null=True, blank=True)
     jumlah_kamar = models.IntegerField(validators=[MinValueValidator(1)], default=1)
