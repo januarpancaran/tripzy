@@ -1,5 +1,6 @@
 from django.db import models
-from trip.models import Trip, RencanaPerjalanan
+from trip.models import RencanaPerjalanan, Trip
+
 
 class LaporanPengeluaran(models.Model):
     laporan_id = models.AutoField(primary_key=True)
