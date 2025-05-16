@@ -201,13 +201,12 @@ class CreateRencanaPerjalanan(graphene.Mutation):
 
         biaya_hotel = 0
         if hotel:
-            biaya_hotel = (
-                hotel.harga_per_malam
-                * trip.lama_perjalanan
-                * round(trip.jumlah_orang / 2)
-            )
+            biaya_hotel = hotel.harga_per_malam * trip.lama_perjalanan * jumlah_kamar
 
-        biaya_kendaraan = kendaraan.harga if kendaraan else 0
+        biaya_kendaraan = 0
+        if kendaraan:
+            biaya_kendaraan = kendaraan.harga * trip.jumlah_orang
+
         seasonal_multiplier = (
             1.2 if trip.tanggal_berangkat.month in [6, 7, 12, 1] else 1
         )
