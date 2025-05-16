@@ -1,24 +1,38 @@
 import graphene
 import graphql_jwt
-from graphql import GraphQLError
 from django.contrib.auth import get_user_model
-from django.core.validators import validate_email
+from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.core.validators import validate_email
 from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from graphene_django.types import DjangoObjectType
+from graphql import GraphQLError
 from graphql_jwt.decorators import login_required
 from graphql_jwt.mixins import ObtainJSONWebTokenMixin
 from graphql_jwt.settings import jwt_settings
 from graphql_jwt.shortcuts import get_token
+
 from .models import Users
+
 
 class UserType(DjangoObjectType):
     class Meta:
         model = Users
-        fields = ("id", "username", "email", "password", "first_name", "last_name", "no_hp", "jenis_kelamin", "tanggal_lahir", "kota_tinggal")
+        fields = (
+            "id",
+            "username",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "no_hp",
+            "jenis_kelamin",
+            "tanggal_lahir",
+            "kota_tinggal",
+        )
+
 
 class Query(graphene.ObjectType):
     me = graphene.Field(UserType)
@@ -26,7 +40,8 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_me(self, info):
         return info.context.user
-    
+
+
 class RegisterUser(graphene.Mutation):
     user = graphene.Field(UserType)
 
@@ -41,7 +56,19 @@ class RegisterUser(graphene.Mutation):
         tanggal_lahir = graphene.Date(required=False)
         kota_tinggal = graphene.String(required=False)
 
-    def mutate(self, info, username, email, password, first_name, last_name="", no_hp=None, jenis_kelamin=None, tanggal_lahir=None, kota_tinggal=None):
+    def mutate(
+        self,
+        info,
+        username,
+        email,
+        password,
+        first_name,
+        last_name="",
+        no_hp=None,
+        jenis_kelamin=None,
+        tanggal_lahir=None,
+        kota_tinggal=None,
+    ):
         User = get_user_model()
 
         if User.objects.filter(username=username).exists():
@@ -74,6 +101,7 @@ class RegisterUser(graphene.Mutation):
 
         return RegisterUser(user=user)
 
+
 class UpdateProfile(graphene.Mutation):
     user = graphene.Field(UserType)
 
@@ -84,13 +112,20 @@ class UpdateProfile(graphene.Mutation):
         kota_tinggal = graphene.String()
 
     @login_required
-    def mutate(self, info, no_hp=None, jenis_kelamin=None, tanggal_lahir=None, kota_tinggal=None):
+    def mutate(
+        self,
+        info,
+        no_hp=None,
+        jenis_kelamin=None,
+        tanggal_lahir=None,
+        kota_tinggal=None,
+    ):
         user = info.context.user
 
         if no_hp is not None:
             if not no_hp.isdigit() or not (10 <= len(no_hp) <= 15):
                 raise GraphQLError("Nomor telepon harus minimal 10 angka")
-            else: 
+            else:
                 user.no_hp = no_hp
         if jenis_kelamin is not None:
             user.jenis_kelamin = jenis_kelamin
@@ -101,6 +136,7 @@ class UpdateProfile(graphene.Mutation):
 
         user.save()
         return UpdateProfile(user=user)
+
 
 class ChangePassword(graphene.Mutation):
     success = graphene.Boolean()
@@ -118,12 +154,15 @@ class ChangePassword(graphene.Mutation):
             return ChangePassword(success=False, errors=["Password lama salah"])
 
         if len(new_password) < 8:
-            return ChangePassword(success=False, errors=["Password baru minimal berisi 8 karakter"])
+            return ChangePassword(
+                success=False, errors=["Password baru minimal berisi 8 karakter"]
+            )
 
         user.set_password(new_password)
         user.save()
 
         return ChangePassword(success=True, errors=[])
+
 
 class CustomObtainJSONWebToken(graphene.Mutation, ObtainJSONWebTokenMixin):
     token = graphene.String()
@@ -146,7 +185,7 @@ class CustomObtainJSONWebToken(graphene.Mutation, ObtainJSONWebTokenMixin):
 
         if not user:
             raise GraphQLError("Akun tidak ditemukan")
-        
+
         if not user.check_password(password):
             raise GraphQLError("Password salah")
 
@@ -156,7 +195,11 @@ class CustomObtainJSONWebToken(graphene.Mutation, ObtainJSONWebTokenMixin):
         return CustomObtainJSONWebToken(
             token=token,
             payload=payload,
-            refresh_expires_in=jwt_settings.JWT_REFRESH_EXPIRATION_DELTA.total_seconds() if jwt_settings.JWT_ALLOW_REFRESH else None
+            refresh_expires_in=(
+                jwt_settings.JWT_REFRESH_EXPIRATION_DELTA.total_seconds()
+                if jwt_settings.JWT_ALLOW_REFRESH
+                else None
+            ),
         )
 
 
@@ -186,6 +229,7 @@ class RequestPasswordReset(graphene.Mutation):
 
         return RequestPasswordReset(success=True)
 
+
 class ResetPassword(graphene.Mutation):
     success = graphene.Boolean()
     errors = graphene.List(graphene.String)
@@ -203,14 +247,19 @@ class ResetPassword(graphene.Mutation):
             return ResetPassword(success=False, errors=["Link tidak valid"])
 
         if not default_token_generator.check_token(user, token):
-            return ResetPassword(success=False, errors=["Token tidak valid atau expired"])
+            return ResetPassword(
+                success=False, errors=["Token tidak valid atau expired"]
+            )
 
         if len(new_password) < 8:
-            return ResetPassword(success=False, errors=["Password baru minimal 8 karakter"])
+            return ResetPassword(
+                success=False, errors=["Password baru minimal 8 karakter"]
+            )
 
         user.set_password(new_password)
         user.save()
         return ResetPassword(success=True, errors=[])
+
 
 class Mutation(graphene.ObjectType):
     register_user = RegisterUser.Field()

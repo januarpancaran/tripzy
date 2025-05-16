@@ -1,13 +1,16 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphql_jwt.decorators import login_required
+from trip.models import RencanaPerjalanan, Trip
+
 from .models import LaporanPengeluaran
-from trip.models import Trip, RencanaPerjalanan
+
 
 class LaporanPengeluaranType(DjangoObjectType):
     class Meta:
         model = LaporanPengeluaran
         fields = "__all__"
+
 
 class Query(graphene.ObjectType):
     all_laporan_pengeluaran = graphene.List(LaporanPengeluaranType)
@@ -15,6 +18,7 @@ class Query(graphene.ObjectType):
     @login_required
     def resolve_all_laporan_pengeluaran(self, info):
         return LaporanPengeluaran.objects.all()
+
 
 class CreateLaporanPengeluaran(graphene.Mutation):
     class Arguments:
@@ -30,7 +34,7 @@ class CreateLaporanPengeluaran(graphene.Mutation):
 
         total_biaya = rencana.estimasi_biaya
 
-        if trip.jumlah_orang <= 0: 
+        if trip.jumlah_orang <= 0:
             raise Exception("Jumlah tidak bisa 0")
 
         biaya_per_orang = round(total_biaya / trip.jumlah_orang)
@@ -43,6 +47,7 @@ class CreateLaporanPengeluaran(graphene.Mutation):
         )
 
         return CreateLaporanPengeluaran(laporan=laporan)
+
 
 class Mutation(graphene.ObjectType):
     create_laporan_pengeluaran = CreateLaporanPengeluaran.Field()

@@ -1,10 +1,16 @@
+from datetime import timedelta
+
 import graphene
+from django.db.models import Q
+from django.utils import timezone
 from graphene_django import DjangoObjectType
 from graphql_jwt.decorators import login_required
-from .models import Kota, Hotel, Kendaraan, Trip, RencanaPerjalanan
+from pengingat.models import Pengingat
 from trip_member.models import TripMember
 from trip_member.schema import TripMemberType
-from django.db.models import Q
+
+from .models import Hotel, Kendaraan, Kota, RencanaPerjalanan, Trip
+
 
 # Queries
 class KotaType(DjangoObjectType):
@@ -12,19 +18,23 @@ class KotaType(DjangoObjectType):
         model = Kota
         fields = "__all__"
 
+
 class HotelType(DjangoObjectType):
     class Meta:
         model = Hotel
         fields = "__all__"
+
 
 class KendaraanType(DjangoObjectType):
     class Meta:
         model = Kendaraan
         fields = "__all__"
 
+
 class TripType(DjangoObjectType):
     members = graphene.List(TripMemberType)
     member_status = graphene.String()
+
     class Meta:
         model = Trip
         fields = "__all__"
@@ -35,10 +45,12 @@ class TripType(DjangoObjectType):
     def resolve_member_status(self, info):
         return "creator" if self.created_by == info.context.user else "member"
 
+
 class RencanaPerjalananType(DjangoObjectType):
     class Meta:
         model = RencanaPerjalanan
         fields = "__all__"
+
 
 class Query(graphene.ObjectType):
     all_kota = graphene.List(KotaType)
@@ -67,8 +79,10 @@ class Query(graphene.ObjectType):
     def resolve_all_rencana_perjalanan(root, info):
         user = info.context.user
         return RencanaPerjalanan.objects.filter(
-            Q(trip__created_by=user) | Q(trip__members__user=user, trip__members__status="joined")
+            Q(trip__created_by=user)
+            | Q(trip__members__user=user, trip__members__status="joined")
         ).distinct()
+
 
 # Mutations
 class CreateKota(graphene.Mutation):
@@ -85,6 +99,7 @@ class CreateKota(graphene.Mutation):
 
         return CreateKota(kota=kota)
 
+
 class CreateHotel(graphene.Mutation):
     class Arguments:
         nama = graphene.String(required=True)
@@ -98,6 +113,7 @@ class CreateHotel(graphene.Mutation):
         hotel.save()
 
         return CreateHotel(hotel=hotel)
+
 
 class CreateKendaraan(graphene.Mutation):
     class Arguments:
@@ -113,6 +129,7 @@ class CreateKendaraan(graphene.Mutation):
 
         return CreateKendaraan(kendaraan=kendaraan)
 
+
 class CreateTrip(graphene.Mutation):
     class Arguments:
         nama_trip = graphene.String(required=True)
@@ -125,7 +142,16 @@ class CreateTrip(graphene.Mutation):
     trip = graphene.Field(TripType)
 
     @login_required
-    def mutate(self, info, nama_trip, asal_id, tujuan_id,  jumlah_orang, lama_perjalanan, tanggal_berangkat):
+    def mutate(
+        self,
+        info,
+        nama_trip,
+        asal_id,
+        tujuan_id,
+        jumlah_orang,
+        lama_perjalanan,
+        tanggal_berangkat,
+    ):
         user = info.context.user
         asal = Kota.objects.get(pk=asal_id)
         tujuan = Kota.objects.get(pk=tujuan_id)
@@ -146,7 +172,17 @@ class CreateTrip(graphene.Mutation):
             status="joined",
         )
 
+        for d in [7, 3, 1]:
+            reminder_date = tanggal_berangkat - timedelta(days=d)
+            if reminder_date >= timezone.localdate():
+                Pengingat.objects.create(
+                    trip=trip,
+                    waktu_pengingat=reminder_date,
+                    is_sent=False,
+                )
+
         return CreateTrip(trip=trip)
+
 
 class CreateRencanaPerjalanan(graphene.Mutation):
     class Arguments:
@@ -164,11 +200,17 @@ class CreateRencanaPerjalanan(graphene.Mutation):
         kendaraan = Kendaraan.objects.get(pk=kendaraan_id) if kendaraan_id else None
 
         biaya_hotel = 0
-        if hotel: 
-            biaya_hotel = hotel.harga_per_malam * trip.lama_perjalanan * round(trip.jumlah_orang / 2)
+        if hotel:
+            biaya_hotel = (
+                hotel.harga_per_malam
+                * trip.lama_perjalanan
+                * round(trip.jumlah_orang / 2)
+            )
 
         biaya_kendaraan = kendaraan.harga if kendaraan else 0
-        seasonal_multiplier = 1.2 if trip.tanggal_berangkat.month in [6, 7, 12, 1] else 1
+        seasonal_multiplier = (
+            1.2 if trip.tanggal_berangkat.month in [6, 7, 12, 1] else 1
+        )
 
         total_estimasi = (biaya_hotel + biaya_kendaraan) * seasonal_multiplier
 
@@ -181,6 +223,7 @@ class CreateRencanaPerjalanan(graphene.Mutation):
         )
 
         return CreateRencanaPerjalanan(rencana=rencana)
+
 
 class Mutation(graphene.ObjectType):
     create_kota = CreateKota.Field()
