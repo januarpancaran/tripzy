@@ -1,5 +1,6 @@
 import graphene
 import graphql_jwt
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError
@@ -221,10 +222,16 @@ class RequestPasswordReset(graphene.Mutation):
         reset_link = f"http://localhost:3000/reset-password?uid={uid}&token={token}"
 
         send_mail(
-            "Reset Password",
-            f"Klik link berikut untuk reset password: {reset_link}",
-            "noreply@tripzy.com",
-            [user.email],
+            subject="Permintaan Rest Password",
+            message=(
+                f"Halo {user.username},\n\n"
+                "Anda telah melakukan permintaan untuk reset password akun. "
+                f"Silakan klik link berikut untuk reset password: \n{reset_link}\n\n"
+                "Salam hangat, \nTim Tripzy"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
         )
 
         return RequestPasswordReset(success=True)
