@@ -222,7 +222,7 @@ class RequestPasswordReset(graphene.Mutation):
         reset_link = f"http://localhost:3000/reset-password?uid={uid}&token={token}"
 
         send_mail(
-            subject="Permintaan Rest Password",
+            subject="Permintaan Reset Password",
             message=(
                 f"Halo {user.username},\n\n"
                 "Anda telah melakukan permintaan untuk reset password akun. "
