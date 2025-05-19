@@ -21,14 +21,15 @@ A project for trip management system built with Django and React TS using GraphQ
 
 ## Installation
 
-```shellSession
-$ git clone https://github.com/januarpancaran/tripzy.git
-$ cd tripzy
-# docker compose up --build -d
+```bash
+git clone https://github.com/januarpancaran/tripzy.git
+cd tripzy
+docker compose up --build -d
+docker compose exec backend python manage.py migrate
 ```
 
 ## Run
 
-```shellSession
-# docker compose up -d
+```bash
+docker compose up -d
 ```
