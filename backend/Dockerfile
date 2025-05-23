@@ -1,10 +1,17 @@
-FROM python:3.11-slim
+FROM python:3.11-alpine
 
 RUN addgroup --system celery && adduser --system --ingroup celery --uid 1000 celery
 
-RUN apt-get update && apt-get install -y \
-  pkg-config default-libmysqlclient-dev build-essential  \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+  gcc \
+  musl-dev \
+  libffi-dev \
+  mariadb-dev \
+  build-base \
+  python3-dev \
+  pkgconfig \
+  linux-headers \
+  openssl-dev
 
 WORKDIR /app
 
