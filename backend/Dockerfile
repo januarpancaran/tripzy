@@ -6,6 +6,7 @@ RUN apk add --no-cache \
   gcc \
   musl-dev \
   libffi-dev \
+  mysql-client \
   mariadb-dev \
   build-base \
   python3-dev \
