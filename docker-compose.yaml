@@ -1,15 +1,4 @@
 services:
-  db:
-    image: mysql:8
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   redis:
     image: redis:7
     container_name: redis
@@ -23,18 +12,16 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
       - redis
     env_file:
       - ./backend/.env
 
   celery:
     build: ./backend
-    command: ./wait-for-it.sh db:3306 -- celery -A core worker --loglevel=info
+    command: celery -A core worker --loglevel=info
     volumes:
       - ./backend:/app
     depends_on:
-      - db
       - redis
       - backend
     env_file:
@@ -42,11 +29,10 @@ services:
 
   celery-beat:
     build: ./backend
-    command: ./wait-for-it.sh db:3306 -- celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command: celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - ./backend:/app
     depends_on:
-      - db
       - redis
       - backend
     env_file: ./backend/.env
@@ -62,6 +48,3 @@ services:
       - NODE_ENV=development
     depends_on:
       - backend
-
-volumes:
-  mysql_data:
