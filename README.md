@@ -24,12 +24,34 @@ A project for trip management system built with Django and React TS using GraphQ
 ```bash
 git clone https://github.com/januarpancaran/tripzy.git
 cd tripzy
-docker compose up --build -d
-docker compose exec backend python manage.py migrate
+cd backend && cp .env.example .env
 ```
 
-## Run
+## Build Docker Images
 
 ```bash
-docker compose up -d
+docker compose up --no-start
+docker compose start
+```
+
+## Edit Environment Variables
+
+```bash
+# Copy this output and paste it in .env file
+docker compose exec backend python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+## Start/Stop Docker Containers
+
+```bash
+# To start containers
+docker compose start
+
+# To stop containers
+docker compose stop
+
+# To rebuild containers
+docker compose down
+docker compose up --no-start
+docker compose start
 ```
