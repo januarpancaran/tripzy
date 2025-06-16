@@ -18,6 +18,8 @@ function App() {
     kotaTinggal: "",
   });
 
+  const [activeTab, setActiveTab] = useState("Akun Saya");
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -73,9 +75,7 @@ function App() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const { username, email, firstName, lastName } = data.me;  
-
-  const [activeTab, setActiveTab] = useState('Akun Saya');
+  const { username, email, firstName, lastName } = data.me;
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans flex flex-col">
@@ -128,7 +128,8 @@ function App() {
               className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.onerror = null;
-                e.currentTarget.src = "https://placehold.co/40x40/cccccc/333333?text=Error";
+                e.currentTarget.src =
+                  "https://placehold.co/40x40/cccccc/333333?text=Error";
               }}
             />
           </div>
@@ -149,24 +150,44 @@ function App() {
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = "https://placehold.co/96x96/cccccc/333333?text=Error";
+                  e.currentTarget.src =
+                    "https://placehold.co/96x96/cccccc/333333?text=Error";
                 }}
               />
             </div>
             <h2 className="text-xl font-semibold text-gray-800">
-              {firstName} {lastName}</h2>
+              {firstName} {lastName}
+            </h2>
             <p className="text-gray-500 text-sm mb-4">{username}</p>
 
             {/* Explorer Card */}
             <div className="relative w-full h-24 rounded-lg overflow-hidden bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center p-4">
               {/* Background gradient with some subtle abstract shapes (simplified) */}
-              <div className="absolute inset-0 opacity-20" style={{
-                background: 'radial-gradient(circle at top left, #a78bfa, transparent), radial-gradient(circle at bottom right, #60a5fa, transparent)',
-              }}></div>
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  background:
+                    "radial-gradient(circle at top left, #a78bfa, transparent), radial-gradient(circle at bottom right, #60a5fa, transparent)",
+                }}
+              ></div>
               <div className="relative z-10 text-white flex flex-col items-start w-full">
                 <div className="flex items-center space-x-2 mb-1">
                   {/* Icon for An Explorer - using lucide-react icon for simplicity */}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-compass"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-compass"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                  </svg>
                   <span className="text-sm font-medium">An Explorer</span>
                 </div>
                 <span className="text-lg font-bold">300 poin</span>
@@ -177,39 +198,182 @@ function App() {
           {/* Navigation Links */}
           <nav className="flex flex-col gap-2">
             {[
-              { name: 'Akun Saya', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                ) },
-              { name: 'Wishlist', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                ) },
-              { name: 'Pesanan Saya', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                ) },
-              { name: 'Data Penumpang', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87C16 13.16 14.7 12 13 12"/><path d="M17 7h.01"/></svg>
-                ) },
-              { name: 'Keuangan Saya', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                ) },
-              { name: 'Refund', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3"/><path d="M10 12h.01"/></svg>
-                ) },
-              { name: 'Pengaturan', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2.72l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1 0-2.72l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                ) },
-              { name: 'Keluar', icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="17 17 22 12 17 7"/><line x1="22" x2="10" y1="12" y2="12"/></svg>
-                ) },
+              {
+                name: "Akun Saya",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-user"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                ),
+              },
+              {
+                name: "Wishlist",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-heart"
+                  >
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                  </svg>
+                ),
+              },
+              {
+                name: "Pesanan Saya",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-shopping-bag"
+                  >
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                    <path d="M3 6h18" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                  </svg>
+                ),
+              },
+              {
+                name: "Data Penumpang",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-users"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87C16 13.16 14.7 12 13 12" />
+                    <path d="M17 7h.01" />
+                  </svg>
+                ),
+              },
+              {
+                name: "Keuangan Saya",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-dollar-sign"
+                  >
+                    <line x1="12" x2="12" y1="2" y2="22" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                ),
+              },
+              {
+                name: "Refund",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-wallet"
+                  >
+                    <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h12a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4h12a2 2 0 0 0 2-2v-3" />
+                    <path d="M10 12h.01" />
+                  </svg>
+                ),
+              },
+              {
+                name: "Pengaturan",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-settings"
+                  >
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2.72l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22.38a2 2 0 0 0-.73 2.73l-.15.1a2 2 0 0 1 0 2.72l.15.1a2 2 0 0 0 .73 2.73l-.22.38a2 2 0 0 0-2.73.73l-.15-.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0-2-2z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                ),
+              },
+              {
+                name: "Keluar",
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-log-out"
+                  >
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="17 17 22 12 17 7" />
+                    <line x1="22" x2="10" y1="12" y2="12" />
+                  </svg>
+                ),
+              },
             ].map((item) => (
               <button
                 key={item.name}
                 className={`flex items-center gap-3 p-3 rounded-lg text-left ${
                   activeTab === item.name
-                    ? 'bg-blue-100 text-blue-700 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? "bg-blue-100 text-blue-700 font-semibold"
+                    : "text-gray-600 hover:bg-gray-50"
                 }`}
-                onClick={item.name === 'Keluar' ? handleLogout : () => setActiveTab(item.name)}
+                onClick={
+                  item.name === "Keluar"
+                    ? handleLogout
+                    : () => setActiveTab(item.name)
+                }
               >
                 {item.icon}
                 <span>{item.name}</span>
@@ -220,14 +384,21 @@ function App() {
 
         {/* Main Content (Profile Data) */}
         <main className="bg-white rounded-lg shadow-md p-6 w-full lg:w-3/4">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Akun Saya</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            Akun Saya
+          </h2>
 
-          <h3 className="text-xl font-medium text-gray-700 mb-4">Data Pribadi</h3>
+          <h3 className="text-xl font-medium text-gray-700 mb-4">
+            Data Pribadi
+          </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             {/* Nama Lengkap */}
             <div>
-              <label htmlFor="fullName" className="block text-gray-600 text-sm font-medium mb-1">
+              <label
+                htmlFor="fullName"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
                 Nama Lengkap
               </label>
               <input
@@ -240,7 +411,10 @@ function App() {
             </div>
 
             <div>
-              <label htmlFor="username" className="block text-gray-600 text-sm font-medium mb-1">
+              <label
+                htmlFor="username"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
                 Username
               </label>
               <input
@@ -256,7 +430,10 @@ function App() {
             <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-4">
               {/* Jenis Kelamin */}
               <div>
-                <label htmlFor="gender" className="block text-gray-600 text-sm font-medium mb-1">
+                <label
+                  htmlFor="gender"
+                  className="block text-gray-600 text-sm font-medium mb-1"
+                >
                   Jenis Kelamin
                 </label>
                 <select
@@ -274,7 +451,10 @@ function App() {
 
               {/* Tanggal Lahir (Day) */}
               <div>
-                <label htmlFor="dobDay" className="block text-gray-600 text-sm font-medium mb-1">
+                <label
+                  htmlFor="dobDay"
+                  className="block text-gray-600 text-sm font-medium mb-1"
+                >
                   Tanggal Lahir
                 </label>
                 <input
@@ -284,14 +464,16 @@ function App() {
                   value={form.tanggalLahir}
                   onChange={handleChange}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                </input>
+                ></input>
               </div>
             </div>
 
             {/* Kota Tinggal */}
             <div className="col-span-1 md:col-span-2">
-              <label htmlFor="city" className="block text-gray-600 text-sm font-medium mb-1">
+              <label
+                htmlFor="city"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
                 Kota Tinggal
               </label>
               <input
@@ -306,7 +488,10 @@ function App() {
 
             {/* Email */}
             <div className="col-span-1 md:col-span-2">
-              <label htmlFor="email" className="block text-gray-600 text-sm font-medium mb-1">
+              <label
+                htmlFor="email"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
                 Email
               </label>
               <input
@@ -320,7 +505,10 @@ function App() {
 
             {/* No. Handphone */}
             <div className="col-span-1 md:col-span-2">
-              <label htmlFor="phone" className="block text-gray-600 text-sm font-medium mb-1">
+              <label
+                htmlFor="phone"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
                 No. Handphone
               </label>
               <input
@@ -332,6 +520,39 @@ function App() {
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="mt-6 flex gap-4">
+            <button
+              onClick={handleSave}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+            >
+              Simpan Perubahan
+            </button>
+            <button
+              onClick={() => {
+                // Reset form to original data
+                if (data?.me) {
+                  setForm({
+                    noHp: data.me.noHp || "",
+                    jenisKelamin: data.me.jenisKelamin || "",
+                    tanggalLahir: data.me.tanggalLahir || "",
+                    kotaTinggal: data.me.kotaTinggal || "",
+                  });
+                }
+              }}
+              className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
+            >
+              Reset
+            </button>
+          </div>
+
+          {/* Change Password Section - Moved outside grid */}
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <h3 className="text-xl font-medium text-gray-700 mb-4">
+              Ubah Password
+            </h3>
             <ChangePasswordForm />
           </div>
         </main>
