@@ -17,9 +17,8 @@ const App: React.FC = () => {
     });
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative"> {/* Added relative positioning to parent for logo */}
-      {/* Logo moved to the top-left corner of the page */}
-      <div className="absolute top-8 left-8 flex items-center space-x-2 z-10"> {/* Added z-10 to ensure it's on top */}
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative"> 
+      <div className="absolute top-8 left-8 flex items-center space-x-2 z-10">
         <img
           src="/tripzy.png"
           alt="Tripzy ID Logo"
@@ -76,12 +75,10 @@ const App: React.FC = () => {
                 />
               </div>
 
-              {/* Masuk Button */}
               <button type="submit" className="w-20 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md">
                 Masuk
               </button>
 
-              {/* Sign Up Link */}
               <p className="text-center text-gray-600 text-sm mt-6">
                 Belum punya akun?{' '}
                 <Link to="/register" className="text-blue-600 hover:underline font-semibold">
