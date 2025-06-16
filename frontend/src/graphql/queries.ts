@@ -29,3 +29,12 @@ export const GET_DISKON = gql`
     }
   }
 `;
+
+export const GET_ALL_KOTA = gql`
+  query GetAllKota {
+    allKota {
+      id
+      nama
+    }
+  }
+`;

@@ -25,7 +25,6 @@ class UserType(DjangoObjectType):
             "id",
             "username",
             "email",
-            "password",
             "first_name",
             "last_name",
             "no_hp",
