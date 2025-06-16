@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { useMutation } from "@apollo/client";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
@@ -7,17 +7,18 @@ import { LOGIN_USER } from "../graphql/mutations";
 // Main App component
 const App: React.FC = () => {
   const navigate = useNavigate();
-    const [form, setForm] = useState({username: '', password: ''});
-    const [loginUser] = useMutation(LOGIN_USER, {
-        onCompleted: ({tokenAuth}) => {
-            localStorage.setItem("token", tokenAuth.token);
-            navigate("/profile");
-        },
-        onError: (err) => alert(err.message),
-    });
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [loginUser] = useMutation(LOGIN_USER, {
+    onCompleted: ({ tokenAuth }) => {
+      localStorage.setItem("token", tokenAuth.token);
+      localStorage.setItem("username", tokenAuth.user.username);
+      navigate("/");
+    },
+    onError: (err) => alert(err.message),
+  });
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative"> 
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative">
       <div className="absolute top-8 left-8 flex items-center space-x-2 z-10">
         <img
           src="/tripzy.png"
@@ -37,56 +38,74 @@ const App: React.FC = () => {
           />
         </div>
 
-                  
-          {/* Right Section - Sign In Form */}
-          <div className="lg:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-gradient-to-br from-white to-purple-50 rounded-3xl">
-            <form onSubmit={e => {
-            e.preventDefault();
-            loginUser({ variables: form });
-            }}>
-              <h2 className="block text-4xl font-bold text-gray-800 mb-6">Sign in</h2>
+        {/* Right Section - Sign In Form */}
+        <div className="lg:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-gradient-to-br from-white to-purple-50 rounded-3xl">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              loginUser({ variables: form });
+            }}
+          >
+            <h2 className="block text-4xl font-bold text-gray-800 mb-6">
+              Sign in
+            </h2>
 
-              {/* Email/Phone Input */}
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  onChange={e => setForm({ ...form, username: e.target.value })}
-                  value={form.username}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                />
-              </div>
+            {/* Email/Phone Input */}
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-gray-700 text-sm font-semibold mb-2"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                value={form.username}
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+            </div>
 
-              {/* Password Input */}
-              <div className="mb-6">
-                <label htmlFor="password" className="block text-gray-700 text-sm font-semibold mb-2">
-                  Password
-                  <Link to="/forgot-password" className="text-xs text-blue-700 hover:underline float-right">
-                    Forgot Password?
-                  </Link>
-                </label>
-                <input
-                  type="password"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  value={form.password} 
-                  onChange={e => setForm({ ...form, password: e.target.value })}
-                />
-              </div>
-
-              <button type="submit" className="w-20 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md">
-                Masuk
-              </button>
-
-              <p className="text-center text-gray-600 text-sm mt-6">
-                Belum punya akun?{' '}
-                <Link to="/register" className="text-blue-600 hover:underline font-semibold">
-                  Daftar disini
+            {/* Password Input */}
+            <div className="mb-6">
+              <label
+                htmlFor="password"
+                className="block text-gray-700 text-sm font-semibold mb-2"
+              >
+                Password
+                <Link
+                  to="/forgot-password"
+                  className="text-xs text-blue-700 hover:underline float-right"
+                >
+                  Forgot Password?
                 </Link>
-              </p>
-            </form>
-          </div>        
+              </label>
+              <input
+                type="password"
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-20 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md"
+            >
+              Masuk
+            </button>
+
+            <p className="text-center text-gray-600 text-sm mt-6">
+              Belum punya akun?{" "}
+              <Link
+                to="/register"
+                className="text-blue-600 hover:underline font-semibold"
+              >
+                Daftar disini
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
