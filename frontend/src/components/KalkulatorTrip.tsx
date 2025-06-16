@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client";
-import { GET_ALL_KOTA } from "../graphql/queries";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { GET_ALL_KOTA, HITUNG_ESTIMASI_BIAYA_TRIP } from "../graphql/queries";
 import { useState } from "react";
 
 type FormState = {
@@ -27,6 +27,9 @@ export default function TripEstimator() {
     kendaraanId: "",
   });
 
+  const [hitungEstimasi, { data: estimasiData, loading: loadingEstimasi }] =
+    useLazyQuery(HITUNG_ESTIMASI_BIAYA_TRIP);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -41,12 +44,34 @@ export default function TripEstimator() {
   };
 
   const handleSubmit = () => {
-    if (!form.asalId || !form.tujuanId) {
-      alert("Silakan pilih asal dan tujuan");
+    const {
+      asalId,
+      tujuanId,
+      jumlahOrang,
+      lamaPerjalanan,
+      tanggalBerangkat,
+      hotelId,
+      jumlahKamar,
+      kendaraanId,
+    } = form;
+
+    if (!asalId || !tujuanId || !tanggalBerangkat) {
+      alert("Silakan lengkapi asal, tujuan, dan tanggal");
       return;
     }
-    // kirim data ke backend / navigasi
-    console.log("Estimasi biaya trip:", form);
+
+    hitungEstimasi({
+      variables: {
+        asalId,
+        tujuanId,
+        jumlahOrang,
+        lamaPerjalanan,
+        tanggalBerangkat,
+        hotelId: hotelId || null,
+        jumlahKamar: jumlahKamar || null,
+        kendaraanId: kendaraanId || null,
+      },
+    });
   };
 
   return (
@@ -176,6 +201,28 @@ export default function TripEstimator() {
       >
         Hitung Estimasi Biaya
       </button>
+
+      {/* Loading & Result */}
+      {loadingEstimasi && (
+        <p className="mt-4 text-gray-500">Menghitung estimasi biaya...</p>
+      )}
+
+      {estimasiData && (
+        <div className="mt-4 bg-blue-50 p-4 rounded text-gray-800 text-sm">
+          <p>
+            <strong>Total Estimasi:</strong> Rp
+            {estimasiData.hitungEstimasiBiayaTrip.totalEstimasi.toLocaleString()}
+          </p>
+          <p>
+            Biaya Hotel: Rp
+            {estimasiData.hitungEstimasiBiayaTrip.biayaHotel.toLocaleString()}
+          </p>
+          <p>
+            Biaya Kendaraan: Rp
+            {estimasiData.hitungEstimasiBiayaTrip.biayaKendaraan.toLocaleString()}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
