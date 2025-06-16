@@ -1,12 +1,12 @@
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
-import { ME_QUERY } from "../graphql/queries";
+import { GET_ME } from "../graphql/queries";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UPDATE_PROFILE } from "../graphql/mutations";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 
 export default function ProfilePage() {
-  const { data, loading, error } = useQuery(ME_QUERY);
+  const { data, loading, error } = useQuery(GET_ME);
   const [updateProfile] = useMutation(UPDATE_PROFILE);
   const client = useApolloClient();
   const navigate = useNavigate();

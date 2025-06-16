@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const ME_QUERY = gql`
+export const GET_ME = gql`
   query Me {
     me {
       id
@@ -35,6 +35,35 @@ export const GET_ALL_KOTA = gql`
     allKota {
       id
       nama
+    }
+  }
+`;
+
+export const GET_TRIP_MEMBERS = gql`
+  query GetTripMembers($tripId: ID!) {
+    trip(id: $tripId) {
+      id
+      namaTrip
+      memberStatus
+      members {
+        id
+        status
+        user {
+          id
+          username
+          email
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    allUsers {
+      id
+      username
+      email
     }
   }
 `;
