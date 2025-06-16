@@ -72,6 +72,32 @@ export const GET_MY_TRIPS = gql`
       jumlahOrang
       lamaPerjalanan
       tanggalBerangkat
+      members {
+        user {
+          username
+        }
+      }
+    }
+  }
+`;
+
+export const GET_SINGLE_TRIP_DETAILS = gql`
+  query GetSingleTripDetails($tripId: ID!) {
+    trip(id: $tripId) {
+      tripId
+      namaTrip
+      memberStatus
+      members {
+        id
+        status
+        invitedAt
+        acceptedAt
+        user {
+          id
+          username
+          email
+        }
+      }
     }
   }
 `;
