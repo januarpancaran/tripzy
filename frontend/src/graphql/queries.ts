@@ -58,6 +58,24 @@ export const GET_TRIP_MEMBERS = gql`
   }
 `;
 
+export const GET_MY_TRIPS = gql`
+  query GetMyTrips {
+    allTrip {
+      tripId
+      namaTrip
+      asal{
+        nama
+      }
+      tujuan{
+        nama
+      }
+      jumlahOrang
+      lamaPerjalanan
+      tanggalBerangkat
+    }
+  }
+`;
+
 export const GET_ALL_USERS = gql`
   query GetAllUsers {
     allUsers {

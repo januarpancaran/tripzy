@@ -4,6 +4,84 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UPDATE_PROFILE } from "../graphql/mutations";
 import ChangePasswordForm from "../components/ChangePasswordForm";
+import { GET_MY_TRIPS } from "../graphql/queries";
+
+function TripList() {
+  const { data, loading, error } = useQuery(GET_MY_TRIPS);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-48">
+        <p className="text-gray-600 text-lg">Memuat daftar trip...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error("GraphQL Error:", error);
+    return (
+      <div className="flex justify-center items-center h-48">
+        <p className="text-red-500 text-lg">
+          Error: Gagal memuat trip. Silakan coba lagi.
+        </p>
+      </div>
+    );
+  }
+
+  const trips = data?.allTrip || [];
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Daftar Trip Saya</h2>
+
+      {trips.length === 0 ? (
+        <p className="text-gray-600 text-center">Anda belum memiliki trip yang dibuat.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
+              <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-left">Nama Trip</th>
+                <th className="py-3 px-6 text-left">Asal</th>
+                <th className="py-3 px-6 text-left">Tujuan</th>
+                <th className="py-3 px-6 text-center">Jumlah Orang</th>
+                <th className="py-3 px-6 text-center">Lama Perjalanan</th>
+                <th className="py-3 px-6 text-left">Tanggal Berangkat</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-700 text-sm font-light">
+              {trips.map((trip) => (
+                <tr
+                  key={trip.tripId} // Use trip.tripId as the key
+                  className="border-b border-gray-200 hover:bg-gray-50"
+                >
+                  <td className="py-3 px-6 text-left whitespace-nowrap">
+                    {trip.namaTrip}
+                  </td>
+                  <td className="py-3 px-6 text-left">{trip.asal?.nama || 'N/A'}</td>
+                  <td className="py-3 px-6 text-left">{trip.tujuan?.nama || 'N/A'}</td>
+                  <td className="py-3 px-6 text-center">
+                    {trip.jumlahOrang}
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    {trip.lamaPerjalanan} hari
+                  </td>
+                  <td className="py-3 px-6 text-left">
+                    {new Date(trip.tanggalBerangkat).toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function App() {
   const { data, loading, error } = useQuery(ME_QUERY);
@@ -18,6 +96,7 @@ function App() {
     kotaTinggal: "",
   });
 
+  // Initialize activeTab with "Akun Saya"
   const [activeTab, setActiveTab] = useState("Akun Saya");
 
   useEffect(() => {
@@ -219,7 +298,7 @@ function App() {
                 ),
               },
               {
-                name: "Wishlist",
+                name: "Daftar Trip",
                 icon: (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -382,179 +461,212 @@ function App() {
           </nav>
         </aside>
 
-        {/* Main Content (Profile Data) */}
+        {/* Main Content Area - Conditional Rendering */}
         <main className="bg-white rounded-lg shadow-md p-6 w-full lg:w-3/4">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-            Akun Saya
-          </h2>
+          {activeTab === "Akun Saya" && (
+            <>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                Akun Saya
+              </h2>
 
-          <h3 className="text-xl font-medium text-gray-700 mb-4">
-            Data Pribadi
-          </h3>
+              <h3 className="text-xl font-medium text-gray-700 mb-4">
+                Data Pribadi
+              </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            {/* Nama Lengkap */}
-            <div>
-              <label
-                htmlFor="fullName"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                Nama Lengkap
-              </label>
-              <input
-                type="text"
-                id="fullName"
-                value={`${firstName} ${lastName}`}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled
-              />
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                {/* Nama Lengkap */}
+                <div>
+                  <label
+                    htmlFor="fullName"
+                    className="block text-gray-600 text-sm font-medium mb-1"
+                  >
+                    Nama Lengkap
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    value={`${firstName} ${lastName}`}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled
+                  />
+                </div>
 
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 cursor-not-allowed"
-                disabled
-              />
-            </div>
+                <div>
+                  <label
+                    htmlFor="username"
+                    className="block text-gray-600 text-sm font-medium mb-1"
+                  >
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    value={username}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 cursor-not-allowed"
+                    disabled
+                  />
+                </div>
 
-            {/* Jenis Kelamin, Tanggal Lahir (responsive grouping) */}
-            <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-4">
-              {/* Jenis Kelamin */}
-              <div>
-                <label
-                  htmlFor="gender"
-                  className="block text-gray-600 text-sm font-medium mb-1"
-                >
-                  Jenis Kelamin
-                </label>
-                <select
-                  id="gender"
-                  name="jenisKelamin"
-                  value={form.jenisKelamin}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Pilih</option>
-                  <option value="L">Laki-Laki</option>
-                  <option value="P">Perempuan</option>
-                </select>
+                {/* Jenis Kelamin, Tanggal Lahir (responsive grouping) */}
+                <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-4">
+                  {/* Jenis Kelamin */}
+                  <div>
+                    <label
+                      htmlFor="gender"
+                      className="block text-gray-600 text-sm font-medium mb-1"
+                    >
+                      Jenis Kelamin
+                    </label>
+                    <select
+                      id="gender"
+                      name="jenisKelamin"
+                      value={form.jenisKelamin}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Pilih</option>
+                      <option value="L">Laki-Laki</option>
+                      <option value="P">Perempuan</option>
+                    </select>
+                  </div>
+
+                  {/* Tanggal Lahir (Day) */}
+                  <div>
+                    <label
+                      htmlFor="dobDay"
+                      className="block text-gray-600 text-sm font-medium mb-1"
+                    >
+                      Tanggal Lahir
+                    </label>
+                    <input
+                      type="date"
+                      id="dobDay"
+                      name="tanggalLahir"
+                      value={form.tanggalLahir}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    ></input>
+                  </div>
+                </div>
+
+                {/* Kota Tinggal */}
+                <div className="col-span-1 md:col-span-2">
+                  <label
+                    htmlFor="city"
+                    className="block text-gray-600 text-sm font-medium mb-1"
+                  >
+                    Kota Tinggal
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="kotaTinggal"
+                    value={form.kotaTinggal}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="col-span-1 md:col-span-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-gray-600 text-sm font-medium mb-1"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled
+                  />
+                </div>
+
+                {/* No. Handphone */}
+                <div className="col-span-1 md:col-span-2">
+                  <label
+                    htmlFor="phone"
+                    className="block text-gray-600 text-sm font-medium mb-1"
+                  >
+                    No. Handphone
+                  </label>
+                  <input
+                    type="text"
+                    id="phone"
+                    name="noHp"
+                    value={form.noHp}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
 
-              {/* Tanggal Lahir (Day) */}
-              <div>
-                <label
-                  htmlFor="dobDay"
-                  className="block text-gray-600 text-sm font-medium mb-1"
+              {/* Save Button */}
+              <div className="mt-6 flex gap-4">
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                 >
-                  Tanggal Lahir
-                </label>
-                <input
-                  type="date"
-                  id="dobDay"
-                  name="tanggalLahir"
-                  value={form.tanggalLahir}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></input>
+                  Simpan Perubahan
+                </button>
+                <button
+                  onClick={() => {
+                    // Reset form to original data
+                    if (data?.me) {
+                      setForm({
+                        noHp: data.me.noHp || "",
+                        jenisKelamin: data.me.jenisKelamin || "",
+                        tanggalLahir: data.me.tanggalLahir || "",
+                        kotaTinggal: data.me.kotaTinggal || "",
+                      });
+                    }
+                  }}
+                  className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
+                >
+                  Reset
+                </button>
               </div>
-            </div>
 
-            {/* Kota Tinggal */}
-            <div className="col-span-1 md:col-span-2">
-              <label
-                htmlFor="city"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                Kota Tinggal
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="kotaTinggal"
-                value={form.kotaTinggal}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+              {/* Change Password Section - Moved outside grid */}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <h3 className="text-xl font-medium text-gray-700 mb-4">
+                  Ubah Password
+                </h3>
+                <ChangePasswordForm />
+              </div>
+            </>
+          )}
 
-            {/* Email */}
-            <div className="col-span-1 md:col-span-2">
-              <label
-                htmlFor="email"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled
-              />
-            </div>
+          {activeTab === "Daftar Trip" && <TripList />}
 
-            {/* No. Handphone */}
-            <div className="col-span-1 md:col-span-2">
-              <label
-                htmlFor="phone"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                No. Handphone
-              </label>
-              <input
-                type="text"
-                id="phone"
-                name="noHp"
-                value={form.noHp}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          {/* Save Button */}
-          <div className="mt-6 flex gap-4">
-            <button
-              onClick={handleSave}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-            >
-              Simpan Perubahan
-            </button>
-            <button
-              onClick={() => {
-                // Reset form to original data
-                if (data?.me) {
-                  setForm({
-                    noHp: data.me.noHp || "",
-                    jenisKelamin: data.me.jenisKelamin || "",
-                    tanggalLahir: data.me.tanggalLahir || "",
-                    kotaTinggal: data.me.kotaTinggal || "",
-                  });
-                }
-              }}
-              className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
-            >
-              Reset
-            </button>
-          </div>
-
-          {/* Change Password Section - Moved outside grid */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="text-xl font-medium text-gray-700 mb-4">
-              Ubah Password
-            </h3>
-            <ChangePasswordForm />
-          </div>
+          {/* Add more conditional rendering for other tabs as needed */}
+          {activeTab === "Pesanan Saya" && (
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+              Pesanan Saya (Coming Soon!)
+            </h2>
+          )}
+          {activeTab === "Data Penumpang" && (
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+              Data Penumpang (Coming Soon!)
+            </h2>
+          )}
+          {activeTab === "Keuangan Saya" && (
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+              Keuangan Saya (Coming Soon!)
+            </h2>
+          )}
+          {activeTab === "Refund" && (
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+              Refund (Coming Soon!)
+            </h2>
+          )}
+          {activeTab === "Pengaturan" && (
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+              Pengaturan (Coming Soon!)
+            </h2>
+          )}
         </main>
       </div>
     </div>
