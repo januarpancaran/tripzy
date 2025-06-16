@@ -42,8 +42,10 @@ export default function CreateTrip() {
         },
       });
 
-      const tripId = data.createTrip.trip.id;
-      navigate("/createitinerary", { state: { tripId } });
+      const tripId = data.createTrip.trip.tripId;
+      navigate("/createitinerary", {
+        state: { tripId, tipeKendaraan: tripState.tipe_kendaraan },
+      });
     } catch (err) {
       console.error("Gagal menyimpan trip:", err);
     }

@@ -146,3 +146,24 @@ export const UPDATE_TRIP_MEMBER_STATUS = gql`
     }
   }
 `;
+
+export const CREATE_RENCANA_PERJALANAN = gql`
+  mutation CreateRencanaPerjalanan(
+    $tripId: ID!
+    $hotelId: ID
+    $jumlahKamar: Int
+    $kendaraanId: ID
+  ) {
+    createRencanaPerjalanan(
+      tripId: $tripId
+      hotelId: $hotelId
+      jumlahKamar: $jumlahKamar
+      kendaraanId: $kendaraanId
+    ) {
+      rencana {
+        rencanaId
+        estimasiBiaya
+      }
+    }
+  }
+`;
