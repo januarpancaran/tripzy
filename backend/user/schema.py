@@ -25,7 +25,6 @@ class UserType(DjangoObjectType):
             "id",
             "username",
             "email",
-            "password",
             "first_name",
             "last_name",
             "no_hp",
@@ -37,10 +36,15 @@ class UserType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     me = graphene.Field(UserType)
+    all_users = graphene.List(UserType)
 
     @login_required
     def resolve_me(self, info):
         return info.context.user
+
+    @login_required
+    def resolve_all_users(self, info):
+        return Users.objects.all()
 
 
 class RegisterUser(graphene.Mutation):

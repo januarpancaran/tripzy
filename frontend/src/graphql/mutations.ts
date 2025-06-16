@@ -96,3 +96,53 @@ export const RESET_PASSWORD = gql`
     }
   }
 `;
+
+export const CREATE_TRIP = gql`
+  mutation CreateTrip(
+    $namaTrip: String!
+    $asalId: ID!
+    $tujuanId: ID!
+    $tanggalBerangkat: Date!
+    $lamaPerjalanan: Int!
+    $jumlahOrang: Int!
+  ) {
+    createTrip(
+      namaTrip: $namaTrip
+      asalId: $asalId
+      tujuanId: $tujuanId
+      tanggalBerangkat: $tanggalBerangkat
+      lamaPerjalanan: $lamaPerjalanan
+      jumlahOrang: $jumlahOrang
+    ) {
+      trip {
+        tripId
+      }
+    }
+  }
+`;
+
+export const ADD_TRIP_MEMBER = gql`
+  mutation AddTripMember($tripId: ID!, $username: String!) {
+    addTripMember(tripId: $tripId, username: $username) {
+      tripMember {
+        id
+        status
+        user {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
+export const UPDATE_TRIP_MEMBER_STATUS = gql`
+  mutation UpdateTripMemberStatus($tripId: ID!, $status: String!) {
+    updateTripMemberStatus(tripId: $tripId, status: $status) {
+      tripMember {
+        id
+        status
+      }
+    }
+  }
+`;

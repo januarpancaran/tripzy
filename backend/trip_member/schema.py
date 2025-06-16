@@ -41,7 +41,7 @@ class AddTripMember(graphene.Mutation):
             trip_member, created = TripMember.objects.get_or_create(
                 trip=trip,
                 user=user_to_invite,
-                defaults={"status": "invited"},
+                defaults={"status": "joined"},
             )
 
             return AddTripMember(trip_member=trip_member)
