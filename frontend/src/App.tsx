@@ -7,6 +7,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 import CreateTrip from "./pages/CreateTrip";
+import CreateItinerary from "./pages/CreateItinerary";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/createtrip" element={<CreateTrip />} />
+        <Route path="/createitinerary" element={<CreateItinerary />} />
       </Routes>
     </BrowserRouter>
   );

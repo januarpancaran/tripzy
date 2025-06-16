@@ -67,3 +67,25 @@ export const GET_ALL_USERS = gql`
     }
   }
 `;
+
+export const GET_ALL_KENDARAAN = gql`
+  query GetAllKendaraan {
+    allKendaraan {
+      id
+      nama
+      tipe
+      harga
+    }
+  }
+`;
+
+export const GET_ALL_HOTELS = gql`
+  query GetAllHotels {
+    allHotel {
+      id
+      nama
+      alamat
+      hargaPerMalam
+    }
+  }
+`;
