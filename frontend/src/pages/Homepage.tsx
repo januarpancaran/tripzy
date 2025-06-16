@@ -1,6 +1,8 @@
 import Jumbotron from "../components/Jumbotron";
 import {Diskon} from "../components/Diskon";
 import {Megasale} from "../components/Megasale";
+import Newsletter from "../components/Newsletter";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -8,6 +10,8 @@ const Home = () => {
       <Jumbotron />
       <Diskon />
       <Megasale />
+      <Newsletter />
+      <Footer />
     </>
   )
 };
