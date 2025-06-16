@@ -49,7 +49,7 @@ const RegisterPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <div className="absolute top-8 left-8 flex items-center space-x-2 z-10"> {/* Added z-10 to ensure it's on top */}
         <img
-          src="/tripzy.png"
+          src="/tripzy-dark.png"
           alt="Tripzy ID Logo"
           className="h-[5.5rem] w-auto object-contain max-h-[200px]"
         />
