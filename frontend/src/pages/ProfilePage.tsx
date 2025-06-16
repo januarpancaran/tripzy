@@ -1,10 +1,25 @@
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
-import { ME_QUERY } from "../graphql/queries";
+import { ME_QUERY, GET_MY_TRIPS, GET_ALL_USERS } from "../graphql/queries";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { UPDATE_PROFILE } from "../graphql/mutations";
+import { UPDATE_PROFILE, ADD_TRIP_MEMBER } from "../graphql/mutations";
 import ChangePasswordForm from "../components/ChangePasswordForm";
-import { GET_MY_TRIPS } from "../graphql/queries";
+
+interface Trip {
+  tripId: string;
+  namaTrip: string;
+  asal?: { nama: string };
+  tujuan?: { nama: string };
+  jumlahOrang: number;
+  lamaPerjalanan: number;
+  tanggalBerangkat: string;
+}
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+}
 
 function TripList() {
   const { data, loading, error } = useQuery(GET_MY_TRIPS);
@@ -47,12 +62,13 @@ function TripList() {
                 <th className="py-3 px-6 text-center">Jumlah Orang</th>
                 <th className="py-3 px-6 text-center">Lama Perjalanan</th>
                 <th className="py-3 px-6 text-left">Tanggal Berangkat</th>
+                <th className="py-3 px-6 text-left">Anggota</th>
               </tr>
             </thead>
             <tbody className="text-gray-700 text-sm font-light">
               {trips.map((trip) => (
                 <tr
-                  key={trip.tripId} // Use trip.tripId as the key
+                  key={trip.tripId}
                   className="border-b border-gray-200 hover:bg-gray-50"
                 >
                   <td className="py-3 px-6 text-left whitespace-nowrap">
@@ -73,12 +89,106 @@ function TripList() {
                       year: "numeric",
                     })}
                   </td>
+                  <td className="py-3 px-6 text-left">
+                    {trip.members?.length > 0 ? (
+                      <span className="text-gray-600">
+                        {trip.members.map(member => member.user.username).join(", ")}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">Belum ada anggota</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+    </div>
+  );
+}
+
+function TripMembersSection() {
+  const { data: tripsData } = useQuery(GET_MY_TRIPS);
+  const { data: usersData } = useQuery(GET_ALL_USERS);
+  const [selectedTripId, setSelectedTripId] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [addTripMember] = useMutation(ADD_TRIP_MEMBER);
+
+  const handleInvite = async () => {
+    const selectedUser = usersData?.allUsers.find(
+      (u: any) => u.id === selectedUserId,
+    );
+    if (!selectedUser || !selectedTripId) return;
+
+    try {
+      await addTripMember({
+        variables: {
+          tripId: selectedTripId,
+          username: selectedUser.username,
+        },
+      });
+      setSelectedUserId("");
+      alert("Anggota berhasil ditambahkan!");
+    } catch (err: any) {
+      alert("Gagal mengundang user: " + err.message);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Tambah Anggota Trip</h2>
+        
+        <div className="space-y-4">
+          <div>
+            <label className="block text-gray-600 text-sm font-medium mb-2">
+              Pilih Trip
+            </label>
+            <select
+              value={selectedTripId}
+              onChange={(e) => setSelectedTripId(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Pilih trip...</option>
+              {tripsData?.allTrip.map((trip: any) => (
+                <option key={trip.tripId} value={trip.tripId}>
+                  {trip.namaTrip}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {selectedTripId && (
+            <div>
+              <label className="block text-gray-600 text-sm font-medium mb-2">
+                Pilih Anggota
+              </label>
+              <div className="flex gap-4">
+                <select
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Pilih user...</option>
+                  {usersData?.allUsers.map((user: any) => (
+                    <option key={user.id} value={user.id}>
+                      {user.username} ({user.email})
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleInvite}
+                  disabled={!selectedUserId}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  Tambah
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -317,7 +427,7 @@ function App() {
                 ),
               },
               {
-                name: "Pesanan Saya",
+                name: "Tambah Anggota Trip",
                 icon: (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -329,11 +439,12 @@ function App() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="lucide lucide-shopping-bag"
+                    className="lucide lucide-users"
                   >
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                    <path d="M3 6h18" />
-                    <path d="M16 10a4 4 0 0 1-8 0" />
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87C16 13.16 14.7 12 13 12" />
+                    <path d="M17 7h.01" />
                   </svg>
                 ),
               },
@@ -641,12 +752,8 @@ function App() {
 
           {activeTab === "Daftar Trip" && <TripList />}
 
-          {/* Add more conditional rendering for other tabs as needed */}
-          {activeTab === "Pesanan Saya" && (
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-              Pesanan Saya (Coming Soon!)
-            </h2>
-          )}
+          {activeTab === "Tambah Anggota Trip" && <TripMembersSection />}
+
           {activeTab === "Data Penumpang" && (
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
               Data Penumpang (Coming Soon!)
