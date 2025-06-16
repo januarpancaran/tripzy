@@ -5,6 +5,7 @@ from laporan_pengeluaran.schema import Query as LaporanPengeluaranQuery
 from pengingat.schema import Query as PengingatQuery
 from trip.schema import Mutation as TripMutation
 from trip.schema import Query as TripQuery
+from trip.schema import HitungEstimasiBiayaTrip as KalkulatorTrip
 from trip_member.schema import Mutation as TripMemberMutation
 from trip_member.schema import Query as TripMemberQuery
 from user.schema import Mutation as UserMutation
@@ -18,6 +19,7 @@ class Query(
     TripMemberQuery,
     LaporanPengeluaranQuery,
     PengingatQuery,
+    KalkulatorTrip,
     graphene.ObjectType,
 ):
     pass

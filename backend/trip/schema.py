@@ -52,6 +52,12 @@ class RencanaPerjalananType(DjangoObjectType):
         fields = "__all__"
 
 
+class EstimasiBiayaType(graphene.ObjectType):
+    biaya_hotel = graphene.Int()
+    biaya_kendaraan = graphene.Int()
+    total_estimasi = graphene.Int()
+
+
 class Query(graphene.ObjectType):
     all_kota = graphene.List(KotaType)
     all_hotel = graphene.List(HotelType)
@@ -222,6 +228,53 @@ class CreateRencanaPerjalanan(graphene.Mutation):
         )
 
         return CreateRencanaPerjalanan(rencana=rencana)
+
+
+class HitungEstimasiBiayaTrip(graphene.ObjectType):
+    hitung_estimasi_biaya_trip = graphene.Field(
+        EstimasiBiayaType,
+        asal_id=graphene.ID(required=True),
+        tujuan_id=graphene.ID(required=True),
+        jumlah_orang=graphene.Int(required=True),
+        lama_perjalanan=graphene.Int(required=True),
+        tanggal_berangkat=graphene.types.datetime.Date(required=True),
+        hotel_id=graphene.ID(),
+        jumlah_kamar=graphene.Int(),
+        kendaraan_id=graphene.ID(),
+    )
+
+    @login_required
+    def resolve_hitung_estimasi_biaya_trip(
+        self,
+        info,
+        asal_id,
+        tujuan_id,
+        jumlah_orang,
+        lama_perjalanan,
+        tanggal_berangkat,
+        hotel_id=None,
+        jumlah_kamar=1,
+        kendaraan_id=None,
+    ):
+        biaya_hotel = 0
+        if hotel_id:
+            hotel = Hotel.objects.get(pk=hotel_id)
+            biaya_hotel = hotel.harga_per_malam * lama_perjalanan * jumlah_kamar
+
+        biaya_kendaraan = 0
+        if kendaraan_id:
+            kendaraan = Kendaraan.objects.get(pk=kendaraan_id)
+            biaya_kendaraan = kendaraan.harga * jumlah_orang
+
+        seasonal_multiplier = 1.2 if tanggal_berangkat.month in [6, 7, 12, 1] else 1
+
+        total_estimasi = round((biaya_hotel + biaya_kendaraan) * seasonal_multiplier)
+
+        return EstimasiBiayaType(
+            biaya_hotel=biaya_hotel,
+            biaya_kendaraan=biaya_kendaraan,
+            total_estimasi=total_estimasi,
+        )
 
 
 class Mutation(graphene.ObjectType):
