@@ -37,14 +37,36 @@ export default function ChangePasswordForm() {
     
     return (
         <div>
-            <h3>Ubah Password</h3>
-            <label>Password Lama:</label>
-            <input type="password" name="oldPassword" value={form.oldPassword} onChange={handleChange} />
+            <h4 className="text-l font-small text-gray-700 mb-4">Ubah Password</h4>
+            <div className="col-span-1 md:col-span-2">
+              <label htmlFor="old_pass" className="block text-gray-600 text-sm font-medium mb-1">
+                Password Lama
+              </label>
+              <input
+                type="password"
+                id="old_pass"
+                name="oldPassword"
+                value={form.oldPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
-            <label>Password Baru:</label>
-            <input type="password" name="newPassword" value={form.newPassword} onChange={handleChange} />
+                        <div className="col-span-1 md:col-span-2">
+              <label htmlFor="old_pass" className="block text-gray-600 text-sm font-medium mb-1">
+                Password Baru
+              </label>
+              <input
+                type="password"
+                id="old_pass"
+                name="newPassword"
+                value={form.newPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
-            <button onClick={handleSubmit}>Simpan</button>
+            <button className="w-20 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md mt-1" onClick={handleSubmit}>Simpan</button>
         </div>
     )
 }
