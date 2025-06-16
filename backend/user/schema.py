@@ -109,7 +109,7 @@ class UpdateProfile(graphene.Mutation):
     class Arguments:
         no_hp = graphene.String()
         jenis_kelamin = graphene.String()
-        tanggal_lahir = graphene.String()
+        tanggal_lahir = graphene.Date()
         kota_tinggal = graphene.String()
 
     @login_required
@@ -169,6 +169,7 @@ class CustomObtainJSONWebToken(graphene.Mutation, ObtainJSONWebTokenMixin):
     token = graphene.String()
     payload = graphene.JSONString()
     refresh_expires_in = graphene.Int()
+    user = graphene.Field(UserType)
 
     class Arguments:
         username = graphene.String(required=True)
@@ -201,6 +202,7 @@ class CustomObtainJSONWebToken(graphene.Mutation, ObtainJSONWebTokenMixin):
                 if jwt_settings.JWT_ALLOW_REFRESH
                 else None
             ),
+            user=user,
         )
 
 

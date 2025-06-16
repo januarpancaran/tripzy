@@ -1,8 +1,8 @@
-import React, { useState } from 'react'; // Import useState
+import React, { useState } from "react"; // Import useState
 import { Link } from "react-router-dom";
 
 export default function Jumbotron() {
-  const [activeTab, setActiveTab] = useState<string>('Bus'); // State to manage the active tab
+  const [activeTab, setActiveTab] = useState<string>("Bus"); // State to manage the active tab
 
   // Function to handle tab clicks
   const handleTabClick = (tabName: string) => {
@@ -128,36 +128,58 @@ export default function Jumbotron() {
         <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black/60 bg-fixed">
           <div className="flex h-full items-center justify-center">
             <div className="px-6 text-center text-white md:px-12">
-              <h1 className="mb-6 mt-15 text-5xl font-bold">Hai kamu, ayo rencanakan perjalananmu</h1>
-              <h3 className="mb-8 text-3xl font-bold">tripzy.id - plan with ease, ride the breeze</h3>
+              <h1 className="mb-6 mt-15 text-5xl font-bold">
+                Hai kamu, ayo rencanakan perjalananmu
+              </h1>
+              <h3 className="mb-8 text-3xl font-bold">
+                tripzy.id - plan with ease, ride the breeze
+              </h3>
 
               {/* Tab Navigation (Travel Types) */}
               <div className="w-fit px-2 py-1 mx-auto bg-white shadow-md rounded-full mt-4 border border-gray-300">
-                <ul className="flex items-center gap-x-3 text-slate-800 text-sm overflow-x-auto pb-1"> {/* Added overflow-x-auto for smaller screens */}
+                <ul className="flex items-center gap-x-3 text-slate-800 text-sm overflow-x-auto pb-1">
+                  {" "}
+                  {/* Added overflow-x-auto for smaller screens */}
                   {[
-                    { name: 'Bus', icon: '/Bus.png' },
-                    { name: 'Kereta', icon: '/Train.png' },
-                    { name: 'Pesawat', icon: '/AirplaneTakeoff.png' },
-                    { name: 'Sewa mobil', icon: '/Car.png' },
-                    { name: 'Hotel', icon: '/BuildingApartment.png' },
-                    { name: 'Villa', icon: '/HouseLine.png' },
-                    { name: 'Trip Calculator', icon: '/Calculator.png' },
+                    { name: "Bus", icon: "/Bus.png" },
+                    { name: "Kereta", icon: "/Train.png" },
+                    { name: "Pesawat", icon: "/AirplaneTakeoff.png" },
+                    { name: "Sewa mobil", icon: "/Car.png" },
+                    { name: "Hotel", icon: "/BuildingApartment.png" },
+                    { name: "Villa", icon: "/HouseLine.png" },
+                    { name: "Trip Calculator", icon: "/Calculator.png" },
                   ].map((item) => (
                     <li
                       key={item.name}
-                      className={`flex items-center gap-1 px-3 py-1 rounded-full cursor-pointer transition-colors shrink-0 ${
-                        activeTab === item.name ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50'
-                      }`}
+                      className={`flex items-center gap-1 px-3 py-1 rounded-full cursor-pointer transition-colors shrink-0 ${activeTab === item.name
+                          ? "bg-blue-100 text-blue-600"
+                          : "hover:bg-blue-50"
+                        }`}
                       onClick={() => handleTabClick(item.name)}
                     >
-                      <img src={item.icon} alt={item.name} className="h-4 w-4" />
+                      <img
+                        src={item.icon}
+                        alt={item.name}
+                        className="h-4 w-4"
+                      />
                       <span>{item.name}</span>
                     </li>
                   ))}
                   {/* Original arrow button, kept as-is */}
                   <li className="flex items-center gap-1 px-3 py-1 shrink-0">
                     <button className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-xl">
-                      <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" fill="black" stroke="black" strokeWidth="0.6"><path d="M21.883 12l-7.527 6.235.644.765 9-7.521-9-7.479-.645.764 7.529 6.236h-21.884v1h21.883z"/></svg>
+                      <svg
+                        width="24"
+                        height="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        fill="black"
+                        stroke="black"
+                        strokeWidth="0.6"
+                      >
+                        <path d="M21.883 12l-7.527 6.235.644.765 9-7.521-9-7.479-.645.764 7.529 6.236h-21.884v1h21.883z" />
+                      </svg>
                     </button>
                   </li>
                 </ul>
@@ -165,13 +187,33 @@ export default function Jumbotron() {
 
               {/* Conditional Content Area */}
               <div className="w-full max-w-[900px] mx-auto bg-white shadow-md rounded-xl border-x border-b border-gray-300 -mt-7">
-                {activeTab === 'Bus' && (
+                {activeTab === "Bus" && (
                   <div className="bus-content p-4 md:p-6">
                     <div className="flex items-center gap-2 mt-6 ml-2">
-                      <input type="radio" id="sekali_jalan_bus" name="jenis_perjalanan_bus" defaultChecked />
-                      <label htmlFor="sekali_jalan_bus" className="cursor-pointer text-black">Sekali jalan</label>
-                      <input type="radio" id="pulang_pergi_bus" name="jenis_perjalanan_bus" className="ml-4" />
-                      <label htmlFor="pulang_pergi_bus" className="cursor-pointer text-black">Pulang-pergi</label>
+                      <input
+                        type="radio"
+                        id="sekali_jalan_bus"
+                        name="jenis_perjalanan_bus"
+                        defaultChecked
+                      />
+                      <label
+                        htmlFor="sekali_jalan_bus"
+                        className="cursor-pointer text-black"
+                      >
+                        Sekali jalan
+                      </label>
+                      <input
+                        type="radio"
+                        id="pulang_pergi_bus"
+                        name="jenis_perjalanan_bus"
+                        className="ml-4"
+                      />
+                      <label
+                        htmlFor="pulang_pergi_bus"
+                        className="cursor-pointer text-black"
+                      >
+                        Pulang-pergi
+                      </label>
                     </div>
 
                     <div className="flex flex-nowrap items-start mt-6 ml-2 overflow-x-auto gap-3 pb-4">
@@ -192,7 +234,9 @@ export default function Jumbotron() {
                         />
                       </div>
                       <div className="flex flex-col w-[120px] ml-5 gap-y-1 shrink-0">
-                        <label className="text-left text-black">Tambah Tujuan</label>
+                        <label className="text-left text-black">
+                          Tambah Tujuan
+                        </label>
                         <input
                           type="text"
                           placeholder="Tujuan"
@@ -200,14 +244,18 @@ export default function Jumbotron() {
                         />
                       </div>
                       <div className="flex flex-col w-[110px] ml-5 gap-y-1 shrink-0">
-                        <label className="text-left text-black">Tanggal Pergi</label>
+                        <label className="text-left text-black">
+                          Tanggal Pergi
+                        </label>
                         <input
                           type="date"
                           className="p-0 border-0 focus:outline-none focus:ring-0 text-black bg-transparent"
                         />
                       </div>
                       <div className="flex flex-col w-[80px] ml-5 gap-y-1 shrink-0">
-                        <label className="text-left text-black">Penumpang</label>
+                        <label className="text-left text-black">
+                          Penumpang
+                        </label>
                         <input
                           type="number"
                           placeholder="Jumlah"
@@ -230,10 +278,13 @@ export default function Jumbotron() {
                   </div>
                 )}
 
-                {activeTab === 'Hotel' && (
+                {activeTab === "Hotel" && (
                   <div className="hotel-content p-4 md:p-6">
                     <div className="mb-4">
-                      <label htmlFor="hotel-destination" className="block text-gray-700 text-sm font-semibold mb-2">
+                      <label
+                        htmlFor="hotel-destination"
+                        className="block text-gray-700 text-sm font-semibold mb-2"
+                      >
                         Tujuan
                       </label>
                       <input
@@ -245,7 +296,10 @@ export default function Jumbotron() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4 mb-4">
                       <div className="w-full sm:w-1/2">
-                        <label htmlFor="check-in" className="block text-gray-700 text-sm font-semibold mb-2">
+                        <label
+                          htmlFor="check-in"
+                          className="block text-gray-700 text-sm font-semibold mb-2"
+                        >
                           Check-in
                         </label>
                         <input
@@ -255,7 +309,10 @@ export default function Jumbotron() {
                         />
                       </div>
                       <div className="w-full sm:w-1/2">
-                        <label htmlFor="check-out" className="block text-gray-700 text-sm font-semibold mb-2">
+                        <label
+                          htmlFor="check-out"
+                          className="block text-gray-700 text-sm font-semibold mb-2"
+                        >
                           Check-out
                         </label>
                         <input
@@ -267,7 +324,10 @@ export default function Jumbotron() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4 mb-6">
                       <div className="w-full sm:w-1/2">
-                        <label htmlFor="guests" className="block text-gray-700 text-sm font-semibold mb-2">
+                        <label
+                          htmlFor="guests"
+                          className="block text-gray-700 text-sm font-semibold mb-2"
+                        >
                           Jumlah Tamu
                         </label>
                         <input
@@ -279,7 +339,10 @@ export default function Jumbotron() {
                         />
                       </div>
                       <div className="w-full sm:w-1/2">
-                        <label htmlFor="rooms" className="block text-gray-700 text-sm font-semibold mb-2">
+                        <label
+                          htmlFor="rooms"
+                          className="block text-gray-700 text-sm font-semibold mb-2"
+                        >
                           Jumlah Kamar
                         </label>
                         <input
@@ -291,25 +354,33 @@ export default function Jumbotron() {
                         />
                       </div>
                     </div>
-                    <button
-                      className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md"
-                    >
+                    <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md">
                       Cari Hotel
                     </button>
                   </div>
                 )}
 
                 {/* Placeholder content for other tabs */}
-                {activeTab !== 'Bus' && activeTab !== 'Hotel' && (
+                {activeTab !== "Bus" && activeTab !== "Hotel" && (
                   <div className="other-content p-4 md:p-6 text-center text-gray-700 h-48 flex items-center justify-center">
-                    <p>Form pencarian untuk layanan {activeTab} akan ditampilkan di sini.</p>
+                    <p>
+                      Form pencarian untuk layanan {activeTab} akan ditampilkan
+                      di sini.
+                    </p>
                   </div>
                 )}
 
                 <hr className="mt-8 border border-gray-300" />
-                <div className="flex items-center mt-6 ml-6 pb-6" >
-                  <img src="/Megaphone.png" alt="Megaphone" className="h-6 w-6" />
-                  <p className="text-black ml-1 text-sm text-left">Temukan lebih banyak <b>promo</b> seru dan hemat untuk liburanmu. Jangan sampai kehabisan, cek sekarang juga!</p>
+                <div className="flex items-center mt-6 ml-6 pb-6">
+                  <img
+                    src="/Megaphone.png"
+                    alt="Megaphone"
+                    className="h-6 w-6"
+                  />
+                  <p className="text-black ml-1 text-sm text-left">
+                    Temukan lebih banyak <b>promo</b> seru dan hemat untuk
+                    liburanmu. Jangan sampai kehabisan, cek sekarang juga!
+                  </p>
                 </div>
               </div>
             </div>
