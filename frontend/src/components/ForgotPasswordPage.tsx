@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
         <img
           src="/tripzy-dark.png"
           alt="Tripzy ID Logo"
-          className="h-[5.5rem] w-auto object-contain max-h-[200px]"
+          className="h-16 w-auto object-contain max-h-[150px]"
         />
       </div>
 
