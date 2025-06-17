@@ -22,7 +22,11 @@ interface User {
 }
 
 function TripList() {
-  const { data, loading, error } = useQuery(GET_MY_TRIPS);
+  const navigate = useNavigate();
+  const { data, loading, error } = useQuery(GET_MY_TRIPS, {
+    fetchPolicy: "cache-and-network",
+    errorPolicy: "all",
+  });
 
   if (loading) {
     return (
@@ -47,10 +51,14 @@ function TripList() {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Daftar Trip Saya</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        Daftar Trip Saya
+      </h2>
 
       {trips.length === 0 ? (
-        <p className="text-gray-600 text-center">Anda belum memiliki trip yang dibuat.</p>
+        <p className="text-gray-600 text-center">
+          Anda belum memiliki trip yang dibuat.
+        </p>
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
@@ -69,30 +77,42 @@ function TripList() {
               {trips.map((trip) => (
                 <tr
                   key={trip.tripId}
-                  className="border-b border-gray-200 hover:bg-gray-50"
+                  onClick={() =>
+                    navigate("/tripinfo", {
+                      state: { tripId: trip.tripId, from: "/profile" },
+                    })
+                  }
+                  className="border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
                 >
                   <td className="py-3 px-6 text-left whitespace-nowrap">
                     {trip.namaTrip}
                   </td>
-                  <td className="py-3 px-6 text-left">{trip.asal?.nama || 'N/A'}</td>
-                  <td className="py-3 px-6 text-left">{trip.tujuan?.nama || 'N/A'}</td>
-                  <td className="py-3 px-6 text-center">
-                    {trip.jumlahOrang}
+                  <td className="py-3 px-6 text-left">
+                    {trip.asal?.nama || "N/A"}
                   </td>
+                  <td className="py-3 px-6 text-left">
+                    {trip.tujuan?.nama || "N/A"}
+                  </td>
+                  <td className="py-3 px-6 text-center">{trip.jumlahOrang}</td>
                   <td className="py-3 px-6 text-center">
                     {trip.lamaPerjalanan} hari
                   </td>
                   <td className="py-3 px-6 text-left">
-                    {new Date(trip.tanggalBerangkat).toLocaleDateString("id-ID", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
+                    {new Date(trip.tanggalBerangkat).toLocaleDateString(
+                      "id-ID",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      },
+                    )}
                   </td>
                   <td className="py-3 px-6 text-left">
                     {trip.members?.length > 0 ? (
                       <span className="text-gray-600">
-                        {trip.members.map(member => member.user.username).join(", ")}
+                        {trip.members
+                          .map((member) => member.user.username)
+                          .join(", ")}
                       </span>
                     ) : (
                       <span className="text-gray-400">Belum ada anggota</span>
@@ -138,8 +158,10 @@ function TripMembersSection() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Tambah Anggota Trip</h2>
-        
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+          Tambah Anggota Trip
+        </h2>
+
         <div className="space-y-4">
           <div>
             <label className="block text-gray-600 text-sm font-medium mb-2">
@@ -533,11 +555,10 @@ function App() {
             ].map((item) => (
               <button
                 key={item.name}
-                className={`flex items-center gap-3 p-3 rounded-lg text-left ${
-                  activeTab === item.name
+                className={`flex items-center gap-3 p-3 rounded-lg text-left ${activeTab === item.name
                     ? "bg-blue-100 text-blue-700 font-semibold"
                     : "text-gray-600 hover:bg-gray-50"
-                }`}
+                  }`}
                 onClick={
                   item.name === "Keluar"
                     ? handleLogout

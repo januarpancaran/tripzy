@@ -9,6 +9,7 @@ import {
 export default function TripInfoPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const previous = location.state?.from;
 
   const tripId =
     typeof location.state === "object" && location.state?.tripId
@@ -100,7 +101,7 @@ export default function TripInfoPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Informasi Trip: {trip.namaTrip}</h1>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(previous === "/profile" ? "/profile" : "/")}
           className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
         >
           Kembali
