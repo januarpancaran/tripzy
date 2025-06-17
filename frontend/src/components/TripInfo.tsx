@@ -9,6 +9,7 @@ import {
 export default function TripInfoPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const previous = location.state?.from;
 
   const tripId =
     typeof location.state === "object" && location.state?.tripId
@@ -99,12 +100,10 @@ export default function TripInfoPage() {
       <div className="w-full max-w-2xl bg-white bg-opacity-95 rounded-3xl shadow-2xl p-10 z-10">
 
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-800 border-b-2 border-blue-200 pb-2">
-            Informasi Trip: {trip.namaTrip}
-          </h1>
+          <h1 className="text-2xl font-bold text-blue-900">Informasi Trip: {trip.namaTrip}</h1>
           <button
-            onClick={() => navigate("/")}
-            className="px-5 py-2 bg-blue-600 text-white font-bold rounded-full shadow hover:bg-blue-700 transition"
+            onClick={() => navigate(previous === "/profile" ? "/profile" : "/")}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
           >
             Kembali
           </button>
@@ -134,7 +133,7 @@ export default function TripInfoPage() {
         </div>
   
         <hr className="my-4" />
-
+  
         <div className="mb-3">
           <div className="font-bold text-blue-700 mb-1">Penginapan:</div>
           {hotel ? (
@@ -149,6 +148,7 @@ export default function TripInfoPage() {
           ) : <div className="italic text-gray-400">Tidak menginap di hotel</div>}
         </div>
   
+        {/* Kendaraan */}
         <div className="mb-3">
           <div className="font-bold text-blue-700 mb-1">Kendaraan:</div>
           {kendaraan ? (
