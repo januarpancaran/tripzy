@@ -96,94 +96,96 @@ export default function TripInfoPage() {
   const { trip, hotel, kendaraan, estimasiBiaya } = rencana;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow mt-6">
-      {/* Header with back button */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Informasi Trip: {trip.namaTrip}</h1>
-        <button
-          onClick={() => navigate(previous === "/profile" ? "/profile" : "/")}
-          className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-        >
-          Kembali
-        </button>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-[url('/background-jumbotron.png')] bg-cover bg-center">
+      <div className="w-full max-w-2xl bg-white bg-opacity-95 rounded-3xl shadow-2xl p-10 z-10">
 
-      <div className="space-y-2">
-        <p>
-          <strong>Asal:</strong> {trip.asal.nama}
-        </p>
-        <p>
-          <strong>Tujuan:</strong> {trip.tujuan.nama}
-        </p>
-        <p>
-          <strong>Tanggal Berangkat:</strong> {trip.tanggalBerangkat}
-        </p>
-        <p>
-          <strong>Lama Perjalanan:</strong> {trip.lamaPerjalanan} hari
-        </p>
-        <p>
-          <strong>Jumlah Orang:</strong> {trip.jumlahOrang}
-        </p>
-
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-bold text-blue-900">Informasi Trip: {trip.namaTrip}</h1>
+          <button
+            onClick={() => navigate(previous === "/profile" ? "/profile" : "/")}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+          >
+            Kembali
+          </button>
+        </div>
+  
+        <div className="grid md:grid-cols-2 gap-x-8 gap-y-2 text-base mb-6">
+          <div>
+            <span className="text-gray-500">Asal:</span>
+            <div className="font-semibold">{trip.asal.nama}</div>
+          </div>
+          <div>
+            <span className="text-gray-500">Tujuan:</span>
+            <div className="font-semibold">{trip.tujuan.nama}</div>
+          </div>
+          <div>
+            <span className="text-gray-500">Tanggal Berangkat:</span>
+            <div className="font-semibold">{trip.tanggalBerangkat}</div>
+          </div>
+          <div>
+            <span className="text-gray-500">Lama Perjalanan:</span>
+            <div className="font-semibold">{trip.lamaPerjalanan} hari</div>
+          </div>
+          <div>
+            <span className="text-gray-500">Jumlah Orang:</span>
+            <div className="font-semibold">{trip.jumlahOrang}</div>
+          </div>
+        </div>
+  
         <hr className="my-4" />
-
-        <p className="font-semibold text-lg">Penginapan:</p>
-        {hotel ? (
-          <>
-            <p>Hotel: {hotel.nama}</p>
-            <p>Alamat: {hotel.alamat}</p>
-            <p>
-              Harga per Malam: Rp{hotel.hargaPerMalam.toLocaleString("id-ID")}
-            </p>
-            <p>Jumlah Kamar: {rencana.jumlahKamar || 1}</p>
-          </>
-        ) : (
-          <p>Tidak menginap di hotel</p>
-        )}
-
-        <hr className="my-4" />
-
-        <p className="font-semibold text-lg">Kendaraan:</p>
-        {kendaraan ? (
-          <>
-            <p>
-              Kendaraan: {kendaraan.nama} ({kendaraan.tipe})
-            </p>
-            <p>
-              Harga: Rp{kendaraan.harga.toLocaleString("id-ID")} x{" "}
-              {trip.jumlahOrang} = Rp
-              {(kendaraan.harga * trip.jumlahOrang).toLocaleString("id-ID")}
-            </p>
-          </>
-        ) : (
-          <p>Tidak memilih kendaraan</p>
-        )}
-
-        <hr className="my-4" />
-
-        <p className="font-semibold text-lg">Anggota Trip:</p>
-        {trip.members && trip.members.length > 0 ? (
-          <ul className="list-disc list-inside text-gray-700">
-            {trip.members.map((m: any) => (
-              <li key={m.user.id}>
-                {m.user.username} ({m.user.email})
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Belum ada anggota yang terdaftar</p>
-        )}
-
-        <hr className="my-4" />
-
-        <p className="text-xl font-bold">
-          Estimasi Total Biaya: Rp{estimasiBiaya.toLocaleString("id-ID")}
-        </p>
-
-        <p className="text-lg font-semibold">
-          Biaya Per Orang: Rp
-          {Math.round(estimasiBiaya / trip.jumlahOrang).toLocaleString("id-ID")}
-        </p>
+  
+        <div className="mb-3">
+          <div className="font-bold text-blue-700 mb-1">Penginapan:</div>
+          {hotel ? (
+            <div className="bg-blue-50 p-3 rounded-lg mb-2">
+              <div>Hotel: <b>{hotel.nama}</b></div>
+              <div className="text-gray-500">Alamat: {hotel.alamat}</div>
+              <div>
+                Harga per Malam: <span className="font-semibold">Rp{hotel.hargaPerMalam.toLocaleString("id-ID")}</span>
+              </div>
+              <div>Jumlah Kamar: <span className="font-semibold">{rencana.jumlahKamar || 1}</span></div>
+            </div>
+          ) : <div className="italic text-gray-400">Tidak menginap di hotel</div>}
+        </div>
+  
+        {/* Kendaraan */}
+        <div className="mb-3">
+          <div className="font-bold text-blue-700 mb-1">Kendaraan:</div>
+          {kendaraan ? (
+            <div className="bg-blue-50 p-3 rounded-lg mb-2">
+              <div>Kendaraan: <b>{kendaraan.nama}</b> <span className="text-gray-500">({kendaraan.tipe})</span></div>
+              <div>
+                Harga: <span className="font-semibold">Rp{kendaraan.harga.toLocaleString("id-ID")}</span> x {trip.jumlahOrang} = <span className="font-semibold">Rp{(kendaraan.harga * trip.jumlahOrang).toLocaleString("id-ID")}</span>
+              </div>
+            </div>
+          ) : <div className="italic text-gray-400">Tidak memilih kendaraan</div>}
+        </div>
+  
+        <div className="mb-3">
+          <div className="font-bold text-blue-700 mb-1">Anggota Trip:</div>
+          {trip.members && trip.members.length > 0 ? (
+            <ul className="bg-slate-50 rounded-lg p-3">
+              {trip.members.map((m: any, idx: number) => (
+                <li key={m.user.id} className="flex items-center gap-2 py-1">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full inline-block" />
+                  <span className="font-medium">{m.user.username}</span>
+                  <span className="text-gray-400">({m.user.email})</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="italic text-gray-400">Belum ada anggota yang terdaftar</div>
+          )}
+        </div>
+  
+        <div className="mt-6 bg-blue-100 rounded-xl px-6 py-4 flex flex-col items-center">
+          <div className="text-lg font-bold text-blue-900 mb-2">
+            Estimasi Total Biaya: <span className="text-2xl">Rp{estimasiBiaya.toLocaleString("id-ID")}</span>
+          </div>
+          <div className="font-semibold text-blue-800">
+            Biaya Per Orang: <span className="text-xl">Rp{Math.round(estimasiBiaya / trip.jumlahOrang).toLocaleString("id-ID")}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
