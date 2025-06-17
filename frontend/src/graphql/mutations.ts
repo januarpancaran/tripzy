@@ -167,3 +167,22 @@ export const CREATE_RENCANA_PERJALANAN = gql`
     }
   }
 `;
+
+export const CREATE_LAPORAN_PENGELUARAN = gql`
+  mutation CreateLaporanPengeluaran($tripId: ID!, $rencanaId: ID!) {
+    createLaporanPengeluaran(tripId: $tripId, rencanaId: $rencanaId) {
+      laporan {
+        laporanId
+        totalBiaya
+        biayaPerOrang
+        trip {
+          tripId
+          namaTrip
+        }
+        rencana {
+          rencanaId
+        }
+      }
+    }
+  }
+`;

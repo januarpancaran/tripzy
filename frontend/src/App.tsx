@@ -8,6 +8,7 @@ import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 import CreateTrip from "./pages/CreateTrip";
 import CreateItinerary from "./pages/CreateItinerary";
+import TripInfoPage from "./components/TripInfo";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/createtrip" element={<CreateTrip />} />
         <Route path="/createitinerary" element={<CreateItinerary />} />
+        <Route path="/tripinfo" element={<TripInfoPage />} />
       </Routes>
     </BrowserRouter>
   );

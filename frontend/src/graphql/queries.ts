@@ -63,10 +63,10 @@ export const GET_MY_TRIPS = gql`
     allTrip {
       tripId
       namaTrip
-      asal{
+      asal {
         nama
       }
-      tujuan{
+      tujuan {
         nama
       }
       jumlahOrang
@@ -130,6 +130,91 @@ export const GET_ALL_HOTELS = gql`
       nama
       alamat
       hargaPerMalam
+    }
+  }
+`;
+
+export const LIST_RENCANA_PERJALANAN = gql`
+  query listRencanaPerjalanan {
+    allRencanaPerjalanan {
+      rencanaId
+      trip {
+        tripId
+        namaTrip
+        asal {
+          nama
+        }
+        tujuan {
+          nama
+        }
+        memberStatus
+        members {
+          user {
+            id
+            username
+            email
+          }
+        }
+        jumlahOrang
+        lamaPerjalanan
+        tanggalBerangkat
+      }
+      hotel {
+        nama
+        alamat
+        hargaPerMalam
+      }
+      jumlahKamar
+      kendaraan {
+        tipe
+        nama
+        harga
+      }
+      estimasiBiaya
+    }
+  }
+`;
+
+export const GET_ALL_LAPORAN_PENGELUARAN = gql`
+  query ListLaporanPengeluaran {
+    allLaporanPengeluaran {
+      laporanId
+      trip {
+        tripId
+        namaTrip
+        asal {
+          nama
+        }
+        tujuan {
+          nama
+        }
+        memberStatus
+        members {
+          user {
+            id
+            username
+            email
+          }
+        }
+        jumlahOrang
+        lamaPerjalanan
+        tanggalBerangkat
+      }
+      rencana {
+        rencanaId
+        hotel {
+          nama
+          alamat
+          hargaPerMalam
+        }
+        kendaraan {
+          tipe
+          nama
+          harga
+        }
+      }
+      totalBiaya
+      biayaPerOrang
     }
   }
 `;
