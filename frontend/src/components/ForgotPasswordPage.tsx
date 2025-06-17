@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
       {/* Logo pojok kiri atas */}
       <div className="absolute top-8 left-8 flex items-center z-10">
         <img
-          src="/tripzy.png"
+          src="/tripzy-dark.png"
           alt="Tripzy ID Logo"
           className="h-[5.5rem] w-auto object-contain max-h-[200px]"
         />
