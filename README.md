@@ -26,6 +26,7 @@ A project for trip management system built with Django and React TS using GraphQ
 ```bash
 git clone https://github.com/januarpancaran/tripzy.git
 cd tripzy
+cp .env.example .env
 cd backend && cp .env.example .env
 ```
 
