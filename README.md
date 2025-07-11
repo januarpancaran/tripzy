@@ -2,6 +2,8 @@
 
 A project for trip management system built with Django and React TS using GraphQL API
 
+![megaphone](HomePage.png)
+
 ## Features
 
 - User management
