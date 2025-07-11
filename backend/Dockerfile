@@ -2,7 +2,7 @@ FROM python:3.11-alpine
 
 RUN addgroup --system celery && adduser --system --ingroup celery --uid 1000 celery
 
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
   gcc \
   musl-dev \
   libffi-dev \
