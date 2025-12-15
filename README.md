@@ -2,7 +2,7 @@
 
 A project for trip management system built with Django and React TS using GraphQL API
 
-![megaphone](HomePage.png)
+![megaphone](.github/images/Tripzy.png)
 
 ## Features
 
@@ -13,48 +13,92 @@ A project for trip management system built with Django and React TS using GraphQ
 - Expense report with cost breakdown for each member
 - Trip reminder notification in D-7, D-3, and D-1 for the trip
 
-## Tools Used
+## Tech Stack
 
-- Django
-- GraphQL
-- React TypeScript
-- MySQL
-- Docker
+- **Backend**: Django + GraphQL
+- **Frontend**: React Typescript + Vite
+- **Database**: MySQL
+- **Real-time Tasks**: Celery + Redis
 
-## Installation
+## Prerequisites
+
+- Python 3.10+
+- Node.js 16+
+- MySQL 8.0+
+- Redis (for Celery)
+
+## Installation & Setup
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/januarpancaran/tripzy.git
 cd tripzy
+```
+
+### 2. Backend Setup
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Copy environment file and configure
 cp .env.example .env
-cd backend && cp .env.example .env
+# Edit .env with your MySQL credentials and Django secret key
 ```
 
-## Build Docker Images
+### 3. Frontend Setup
 
 ```bash
-docker compose up --no-start
-docker compose start
+cd frontend
+
+# Install dependencies
+npm install
 ```
 
-## Edit Environment Variables
+### 4. Database Setup
 
 ```bash
-# Copy this output and paste it in .env file
-docker compose exec backend python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+cd backend
+
+# Run migrations
+python manage.py migrate
+
+# Create superuser (admin)
+python manage.py createsuperuser
 ```
 
-## Start/Stop Docker Containers
+## Running the Project
+
+### Start Backend Server
 
 ```bash
-# To start containers
-docker compose start
+cd backend
+source .venv/bin/activate
+python manage.py runserver
+```
 
-# To stop containers
-docker compose stop
+The GraphQL API will be available at `http://localhost:8000/graphql/`
 
-# To rebuild containers
-docker compose down
-docker compose up --no-start
-docker compose start
+### Start Frontend Development Server
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173/`
+
+### Start Celery Worker (for notifications)
+
+```bash
+cd backend
+source .venv/bin/activate
+celery -A core worker -l info
 ```
